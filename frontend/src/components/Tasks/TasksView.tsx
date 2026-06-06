@@ -565,7 +565,7 @@ export default function TasksView() {
               {/* Column Header */}
               <div className={`p-3 rounded-xl border flex items-center justify-between font-bold text-sm md:text-base lg:text-lg mb-4 ${titleColors}`}>
                 <span>{colName}</span>
-                <span className="bg-slate-200/60 dark:bg-slate-950/50 text-slate-700 dark:text-slate-350 px-2 py-0.5 rounded-md text-xs md:text-sm">{colTasks.length}</span>
+                <span className="bg-slate-200/60 dark:bg-slate-950/50 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md text-xs md:text-sm">{colTasks.length}</span>
               </div>
 
               {/* Task Cards Container */}
@@ -674,7 +674,7 @@ export default function TasksView() {
                   );
                 })}
                 {colTasks.length === 0 && (
-                  <div className="py-8 text-center text-slate-450 dark:text-slate-650 text-xs md:text-sm italic">No tasks in this stage.</div>
+                  <div className="py-8 text-center text-slate-400 dark:text-slate-600 text-xs md:text-sm italic">No tasks in this stage.</div>
                 )}
               </div>
             </div>
@@ -807,7 +807,7 @@ export default function TasksView() {
                 <button
                   type="button"
                   onClick={() => setShowTaskFormModal(false)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-650 dark:text-slate-300 rounded-lg text-sm md:text-base font-semibold cursor-pointer"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-sm md:text-base font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -871,7 +871,7 @@ export default function TasksView() {
               <div className="md:col-span-7 space-y-6">
                 <div>
                   <h4 className="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-wider">Description</h4>
-                  <p className="text-sm md:text-base text-slate-600 dark:text-slate-350 mt-2 whitespace-pre-line leading-relaxed bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 p-4 rounded-xl">
+                  <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 mt-2 whitespace-pre-line leading-relaxed bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 p-4 rounded-xl">
                     {activeTask.description || 'No description provided.'}
                   </p>
                 </div>
@@ -921,7 +921,7 @@ export default function TasksView() {
                         <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden">
                           <div className="h-full bg-indigo-500" style={{ width: `${uploadProgress}%` }}></div>
                         </div>
-                        <span className="text-[10px] md:text-xs text-slate-550 dark:text-slate-400">{uploadProgress}%</span>
+                        <span className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400">{uploadProgress}%</span>
                       </div>
                     )}
                   </div>
@@ -947,7 +947,7 @@ export default function TasksView() {
                               {new Date(c.createdAt).toLocaleDateString()} at {new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           </div>
-                          <p className="text-slate-600 dark:text-slate-450 mt-1">{c.text}</p>
+                          <p className="text-slate-600 dark:text-slate-400 mt-1">{c.text}</p>
                         </div>
                       </div>
                     ))}
@@ -963,7 +963,7 @@ export default function TasksView() {
                       placeholder="Write a comment..."
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
-                      className="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs md:text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-650 focus:outline-none focus:border-indigo-500"
+                      className="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs md:text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-indigo-500"
                     />
                     <button
                       type="submit"
@@ -976,7 +976,7 @@ export default function TasksView() {
               </div>
 
               {/* Right Column: Status & Assignment Panel */}
-              <div className="md:col-span-5 space-y-6 bg-slate-550/5 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-900/50 p-5 rounded-2xl max-h-fit shadow-inner">
+              <div className="md:col-span-5 space-y-6 bg-slate-500/5 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-900/50 p-5 rounded-2xl max-h-fit shadow-inner">
                 <h4 className="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-200 dark:border-slate-800">
                   Task Parameters
                 </h4>
@@ -1051,7 +1051,7 @@ export default function TasksView() {
                         />
                         <div className="min-w-0">
                           <span className="block text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 truncate">{(activeTask.assignedMember as User).name}</span>
-                          <span className="block text-[9px] md:text-[10px] text-slate-400 dark:text-slate-550 mt-0.5 truncate">{(activeTask.assignedMember as User).email}</span>
+                          <span className="block text-[9px] md:text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">{(activeTask.assignedMember as User).email}</span>
                         </div>
                       </div>
                     ) : (

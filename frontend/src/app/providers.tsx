@@ -8,7 +8,7 @@ import { ThemeProvider } from 'next-themes';
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} disableTransitionOnChange>
       <Provider store={store}>
         {children}
         <Toast />
