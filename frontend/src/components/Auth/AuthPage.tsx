@@ -79,10 +79,10 @@ export default function AuthPage() {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-4xl font-extrabold tracking-tight text-white leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
               Manage projects, assign tasks, and track team progress.
             </h2>
-            <p className="text-slate-400 text-base max-w-md">
+            <p className="text-slate-400 text-sm sm:text-base max-w-md">
               A premium, role-based platform designed to organize workloads, automate conflict validation, and deliver insights into team productivity.
             </p>
           </div>

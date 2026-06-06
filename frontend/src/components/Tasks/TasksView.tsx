@@ -724,7 +724,7 @@ export default function TasksView() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-xs md:text-sm font-semibold text-slate-400" htmlFor="task-project-select">Project *</label>
                   <select
@@ -757,7 +757,7 @@ export default function TasksView() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1">
                   <label className="text-xs md:text-sm font-semibold text-slate-400" htmlFor="task-due-date-input">Due Date *</label>
                   <DatePicker
@@ -829,7 +829,7 @@ export default function TasksView() {
           <div className="w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up flex flex-col max-h-[90vh]">
 
             {/* Modal Header */}
-            <div className="flex justify-between items-start p-6 border-b border-slate-800 bg-slate-950/40">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 sm:p-6 border-b border-slate-800 bg-slate-950/40">
               <div>
                 <span className="text-[10px] md:text-xs font-bold text-indigo-400 bg-indigo-950 border border-indigo-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
                   {(activeTask.project as Project)?.name || 'Project'}

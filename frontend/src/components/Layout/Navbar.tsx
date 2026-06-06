@@ -90,7 +90,7 @@ export default function Navbar({ title, onRefresh }: NavbarProps) {
         </div>
 
         {user && (
-          <div className="flex items-center gap-2 ml-1 sm:hidden">
+          <div className="flex items-center gap-2 ml-1">
             <img
               src={user.avatarUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name}`}
               alt={user.name}

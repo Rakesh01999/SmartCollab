@@ -43,7 +43,7 @@ export default function ActivityLogView() {
   return (
     <div className="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full animate-fade-in-up">
       {/* Title & Operations */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white flex items-center gap-2">
             <ActivityIcon className="w-5 h-5 text-indigo-400" />

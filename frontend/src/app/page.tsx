@@ -89,15 +89,15 @@ export default function Home() {
   return (
     <div className="min-h-screen flex bg-slate-950 text-slate-100 relative overflow-hidden">
       {/* Dynamic ambient glowing light */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-violet-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] bg-violet-600/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Sidebar - fixed on mobile, static on desktop */}
       <Sidebar currentView={currentView} onViewChange={setCurrentView} />
 
       {/* Main content wrapper */}
       <div className="flex-1 flex flex-col min-h-screen min-w-0 overflow-x-hidden transition-all duration-300">
-        
+
         {/* Top Navbar */}
         <Navbar title={viewTitles[currentView]} onRefresh={handleRefreshData} />
 
