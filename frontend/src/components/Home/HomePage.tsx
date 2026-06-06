@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 import {
     ArrowRight,
     LayoutDashboard,
@@ -23,6 +25,7 @@ import { useTheme } from 'next-themes';
 
 export default function HomePage() {
     const router = useRouter();
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
@@ -180,10 +183,10 @@ export default function HomePage() {
                                 </button>
                             )}
                             <button
-                                onClick={() => router.push('/auth')}
+                                onClick={() => isAuthenticated ? router.push('/dashboard') : router.push('/auth')}
                                 className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-0.5 transition-all cursor-pointer"
                             >
-                                Get Started
+                                {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
                                 <ArrowRight className="w-4 h-4" />
                             </button>
                             {/* Mobile menu toggle */}
@@ -211,10 +214,10 @@ export default function HomePage() {
                                 Testimonials
                             </a>
                             <button
-                                onClick={() => router.push('/auth')}
+                                onClick={() => isAuthenticated ? router.push('/dashboard') : router.push('/auth')}
                                 className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all cursor-pointer"
                             >
-                                Get Started
+                                {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
                                 <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
@@ -260,10 +263,10 @@ export default function HomePage() {
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up-delay-3">
                             <button
-                                onClick={() => router.push('/auth')}
+                                onClick={() => isAuthenticated ? router.push('/dashboard') : router.push('/auth')}
                                 className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-2xl text-base font-semibold hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                             >
-                                Start Free Today
+                                {isAuthenticated ? 'Go to Dashboard' : 'Start Free Today'}
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </button>
                             <a
@@ -535,10 +538,10 @@ export default function HomePage() {
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <button
-                                    onClick={() => router.push('/auth')}
+                                    onClick={() => isAuthenticated ? router.push('/dashboard') : router.push('/auth')}
                                     className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                                 >
-                                    Launch Your Workspace
+                                    {isAuthenticated ? 'Go to Dashboard' : 'Launch Your Workspace'}
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </div>
