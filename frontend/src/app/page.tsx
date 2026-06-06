@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { loginSuccess, logout } from '../store/authSlice';
 import { authAPI } from '../lib/api';
 import AuthPage from '../components/Auth/AuthPage';
+import HomePage from '../components/Home/HomePage';
 import Sidebar from '../components/Layout/Sidebar';
 import Navbar from '../components/Layout/Navbar';
 import DashboardView from '../components/Dashboard/DashboardView';
@@ -21,6 +22,7 @@ export default function Home() {
 
   const [currentView, setCurrentView] = useState<string>('dashboard');
   const [sessionChecking, setSessionChecking] = useState<boolean>(true);
+  const [showAuth, setShowAuth] = useState<boolean>(false);
 
   // Check active user session on startup
   useEffect(() => {
@@ -54,6 +56,10 @@ export default function Home() {
     setTimeout(() => setCurrentView(prevView), 10);
   };
 
+  const handleGetStarted = () => {
+    setShowAuth(true);
+  };
+
   if (sessionChecking) {
     return (
       <div className="min-h-screen w-full flex items-center justify-center bg-[var(--background)] text-[var(--foreground)]">
@@ -66,7 +72,10 @@ export default function Home() {
   }
 
   if (!isAuthenticated) {
-    return <AuthPage />;
+    if (showAuth) {
+      return <AuthPage />;
+    }
+    return <HomePage onGetStarted={handleGetStarted} />;
   }
 
   // Map view IDs to components
