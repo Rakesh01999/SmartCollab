@@ -1,0 +1,50 @@
+# ===========================
+# SmartCollab Root .gitignore
+# ===========================
+
+# --- Environment / Secret files ---
+.env
+.env.*
+!.env.example
+!.env.template
+
+# --- Dependencies ---
+node_modules/
+
+# --- Build / Dist ---
+dist/
+build/
+out/
+
+# --- Logs ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# --- IDE ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- Coverage ---
+coverage/
+
+# --- Uploads ---
+uploads/
+
+# --- TypeScript build info ---
+*.tsbuildinfo
+
+# --- PEM keys / certificates ---
+*.pem
+*.key
+*.cert

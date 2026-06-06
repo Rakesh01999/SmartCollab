@@ -1,0 +1,38 @@
+# ===========================
+# SmartCollab Backend .gitignore
+# ===========================
+
+# --- Environment / Secret files ---
+.env
+.env.*
+!.env.example
+!.env.template
+
+# --- Dependencies ---
+node_modules/
+
+# --- Build output ---
+dist/
+
+# --- Logs ---
+*.log
+npm-debug.log*
+
+# --- Uploads directory ---
+uploads/
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- IDE ---
+.vscode/
+.idea/
+
+# --- TypeScript build info ---
+*.tsbuildinfo
+
+# --- PEM keys / certificates ---
+*.pem
+*.key
+*.cert
