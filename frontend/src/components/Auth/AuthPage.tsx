@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFailure } from '../../store/authSlice';
 import { showToast } from '../../store/appSlice';
@@ -10,6 +11,7 @@ import { RootState, AppDispatch } from '../../store/store';
 
 export default function AuthPage() {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const loading = useSelector((state: RootState) => state.auth.loading);
 
   const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -37,6 +39,7 @@ export default function AuthPage() {
         dispatch(showToast({ message: 'Registration successful! Welcome.', type: 'success' }));
       }
       dispatch(loginSuccess(res.data));
+      router.push('/dashboard');
     } catch (error: any) {
       dispatch(loginFailure(error.message));
       dispatch(showToast({ message: error.message || 'Authentication failed', type: 'error' }));
@@ -49,6 +52,7 @@ export default function AuthPage() {
       const res = await authAPI.login(demoEmail, 'password123');
       dispatch(loginSuccess(res.data));
       dispatch(showToast({ message: `Logged in as ${res.data.user.role}!`, type: 'success' }));
+      router.push('/dashboard');
     } catch (error: any) {
       // If seeding is needed first
       dispatch(loginFailure(error.message));

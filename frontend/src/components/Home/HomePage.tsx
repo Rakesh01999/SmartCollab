@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     ArrowRight,
     LayoutDashboard,
@@ -20,11 +21,8 @@ import {
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
-interface HomePageProps {
-    onGetStarted: () => void;
-}
-
-export default function HomePage({ onGetStarted }: HomePageProps) {
+export default function HomePage() {
+    const router = useRouter();
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
@@ -182,7 +180,7 @@ export default function HomePage({ onGetStarted }: HomePageProps) {
                                 </button>
                             )}
                             <button
-                                onClick={onGetStarted}
+                                onClick={() => router.push('/auth')}
                                 className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-0.5 transition-all cursor-pointer"
                             >
                                 Get Started
@@ -213,7 +211,7 @@ export default function HomePage({ onGetStarted }: HomePageProps) {
                                 Testimonials
                             </a>
                             <button
-                                onClick={onGetStarted}
+                                onClick={() => router.push('/auth')}
                                 className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all cursor-pointer"
                             >
                                 Get Started
@@ -262,7 +260,7 @@ export default function HomePage({ onGetStarted }: HomePageProps) {
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up-delay-3">
                             <button
-                                onClick={onGetStarted}
+                                onClick={() => router.push('/auth')}
                                 className="group inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-2xl text-base font-semibold hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                             >
                                 Start Free Today
@@ -537,7 +535,7 @@ export default function HomePage({ onGetStarted }: HomePageProps) {
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <button
-                                    onClick={onGetStarted}
+                                    onClick={() => router.push('/auth')}
                                     className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-2xl text-lg font-semibold hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                                 >
                                     Launch Your Workspace

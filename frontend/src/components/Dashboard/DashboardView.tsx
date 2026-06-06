@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { projectsAPI, tasksAPI, teamAPI, activitiesAPI } from '../../lib/api';
 import { showToast } from '../../store/appSlice';
 import {
@@ -16,11 +17,8 @@ import {
 import { AppDispatch } from '../../store/store';
 import { Project, Task, Activity, User } from '../../types';
 
-interface DashboardViewProps {
-  onViewChange: (view: string) => void;
-}
-
-export default function DashboardView({ onViewChange }: DashboardViewProps) {
+export default function DashboardView() {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(true);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -137,7 +135,7 @@ export default function DashboardView({ onViewChange }: DashboardViewProps) {
           </p>
         </div>
         <button
-          onClick={() => onViewChange('tasks')}
+          onClick={() => router.push('/tasks')}
           className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs md:text-sm lg:text-base font-semibold transition-all shadow-lg shadow-indigo-600/20 cursor-pointer self-start md:self-auto"
         >
           View Kanban Board
@@ -321,7 +319,7 @@ export default function DashboardView({ onViewChange }: DashboardViewProps) {
           <div className="text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200 dark:border-slate-900 pt-3 flex justify-between items-center">
             <span>Overall completion trends.</span>
             <button
-              onClick={() => onViewChange('projects')}
+              onClick={() => router.push('/projects')}
               className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-bold cursor-pointer hover:underline"
             >
               Manage Projects
@@ -342,7 +340,7 @@ export default function DashboardView({ onViewChange }: DashboardViewProps) {
               <p className="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-0.5">Assigned tasks and completed work ratio per member.</p>
             </div>
             <button
-              onClick={() => onViewChange('team')}
+              onClick={() => router.push('/team')}
               className="text-xs md:text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-bold cursor-pointer"
             >
               View Team
@@ -398,7 +396,7 @@ export default function DashboardView({ onViewChange }: DashboardViewProps) {
               <p className="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-0.5">Logs of recent updates on tasks and projects.</p>
             </div>
             <button
-              onClick={() => onViewChange('activities')}
+              onClick={() => router.push('/activities')}
               className="text-xs md:text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-bold cursor-pointer"
             >
               View Logs

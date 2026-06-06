@@ -9,6 +9,7 @@ export interface AppState {
     type: 'success' | 'error' | 'warning';
     id: number;
   } | null;
+  refreshCounter: number;
 }
 
 const initialState: AppState = {
@@ -16,6 +17,7 @@ const initialState: AppState = {
   searchQuery: '',
   sidebarOpen: true,
   toast: null,
+  refreshCounter: 0,
 };
 
 const appSlice = createSlice({
@@ -34,6 +36,9 @@ const appSlice = createSlice({
     setSidebarOpen(state, action: PayloadAction<boolean>) {
       state.sidebarOpen = action.payload;
     },
+    triggerRefresh(state) {
+      state.refreshCounter += 1;
+    },
     showToast(state, action: PayloadAction<{ message: string; type?: 'success' | 'error' | 'warning' }>) {
       state.toast = {
         message: action.payload.message,
@@ -47,13 +52,14 @@ const appSlice = createSlice({
   },
 });
 
-export const { 
-  setActiveProjectId, 
-  setSearchQuery, 
-  toggleSidebar, 
-  setSidebarOpen, 
-  showToast, 
-  hideToast 
+export const {
+  setActiveProjectId,
+  setSearchQuery,
+  toggleSidebar,
+  setSidebarOpen,
+  showToast,
+  hideToast,
+  triggerRefresh
 } = appSlice.actions;
 
 export default appSlice.reducer;

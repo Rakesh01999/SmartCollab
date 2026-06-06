@@ -17,15 +17,13 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import { useRouter, usePathname } from 'next/navigation';
 import { RootState, AppDispatch } from '../../store/store';
 
-interface SidebarProps {
-  currentView: string;
-  onViewChange: (view: string) => void;
-}
-
-export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
+export default function Sidebar() {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const pathname = usePathname();
   const user = useSelector((state: RootState) => state.auth.user);
   const sidebarOpen = useSelector((state: RootState) => state.app.sidebarOpen);
   const { theme, setTheme } = useTheme();
@@ -54,10 +52,11 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(showToast({ message: 'Logged out successfully', type: 'success' }));
+    router.push('/');
   };
 
-  const handleNavClick = (viewId: string) => {
-    onViewChange(viewId);
+  const handleNavClick = (path: string) => {
+    router.push(path);
     // Auto-close sidebar on mobile after navigation
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
       dispatch(setSidebarOpen(false));
@@ -65,11 +64,11 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
   };
 
   const navItems = [
-    { id: 'dashboard', name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { id: 'projects', name: 'Projects', icon: <FolderKanban className="w-5 h-5" /> },
-    { id: 'tasks', name: 'Kanban Board', icon: <ListTodo className="w-5 h-5" /> },
-    { id: 'team', name: 'Team Members', icon: <Users className="w-5 h-5" /> },
-    { id: 'activities', name: 'Activity Logs', icon: <Activity className="w-5 h-5" /> },
+    { path: '/dashboard', name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { path: '/projects', name: 'Projects', icon: <FolderKanban className="w-5 h-5" /> },
+    { path: '/tasks', name: 'Kanban Board', icon: <ListTodo className="w-5 h-5" /> },
+    { path: '/team', name: 'Team Members', icon: <Users className="w-5 h-5" /> },
+    { path: '/activities', name: 'Activity Logs', icon: <Activity className="w-5 h-5" /> },
   ];
 
   return (
@@ -131,11 +130,11 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
           {/* Nav Links */}
           <nav className="p-3 space-y-1">
             {navItems.map((item) => {
-              const isActive = currentView === item.id;
+              const isActive = pathname === item.path;
               return (
                 <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
+                  key={item.path}
+                  onClick={() => handleNavClick(item.path)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm md:text-base font-medium transition-all cursor-pointer ${isActive
                     ? 'bg-indigo-600 text-white shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/40'

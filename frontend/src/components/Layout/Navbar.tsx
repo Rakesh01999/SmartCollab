@@ -1,7 +1,7 @@
 'use client';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setSearchQuery, showToast, toggleSidebar } from '../../store/appSlice';
+import { setSearchQuery, showToast, toggleSidebar, triggerRefresh } from '../../store/appSlice';
 import { Menu, Search, Database, Bell, RefreshCw } from 'lucide-react';
 import { authAPI } from '../../lib/api';
 import { useState, ChangeEvent } from 'react';
@@ -9,10 +9,9 @@ import { RootState, AppDispatch } from '../../store/store';
 
 interface NavbarProps {
   title: string;
-  onRefresh?: () => void;
 }
 
-export default function Navbar({ title, onRefresh }: NavbarProps) {
+export default function Navbar({ title }: NavbarProps) {
   const dispatch = useDispatch<AppDispatch>();
   const searchQuery = useSelector((state: RootState) => state.app.searchQuery);
   const user = useSelector((state: RootState) => state.auth.user);
@@ -27,9 +26,7 @@ export default function Navbar({ title, onRefresh }: NavbarProps) {
       setSeeding(true);
       const res = await authAPI.seed();
       dispatch(showToast({ message: res.data.message || 'Database seeded successfully!', type: 'success' }));
-      if (onRefresh) {
-        onRefresh();
-      }
+      dispatch(triggerRefresh());
     } catch (error: any) {
       dispatch(showToast({ message: error.message || 'Seeding failed', type: 'error' }));
     } finally {
