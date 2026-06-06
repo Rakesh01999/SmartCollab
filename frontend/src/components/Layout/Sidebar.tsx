@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Sun,
-  Moon
+  Moon,
+  Home
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
@@ -64,6 +65,7 @@ export default function Sidebar() {
   };
 
   const navItems = [
+    { path: '/', name: 'Home', icon: <Home className="w-5 h-5" /> },
     { path: '/dashboard', name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { path: '/projects', name: 'Projects', icon: <FolderKanban className="w-5 h-5" /> },
     { path: '/tasks', name: 'Kanban Board', icon: <ListTodo className="w-5 h-5" /> },

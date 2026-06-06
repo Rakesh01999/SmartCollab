@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../../store/store';
+import { logout } from '../../store/authSlice';
+import { showToast } from '../../store/appSlice';
 import {
     ArrowRight,
     LayoutDashboard,
@@ -20,20 +22,38 @@ import {
     X,
     Moon,
     Sun,
+    ChevronDown,
+    LogOut,
+    User,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 export default function HomePage() {
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+    const user = useSelector((state: RootState) => state.auth.user);
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
     const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
+    const profileRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setMounted(true);
+    }, []);
+
+    // Close profile dropdown on outside click
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+                setProfileOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     useEffect(() => {
@@ -182,13 +202,86 @@ export default function HomePage() {
                                     {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                                 </button>
                             )}
-                            <button
-                                onClick={() => isAuthenticated ? router.push('/dashboard') : router.push('/auth')}
-                                className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-0.5 transition-all cursor-pointer"
-                            >
-                                {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
-                                <ArrowRight className="w-4 h-4" />
-                            </button>
+
+                            {/* Conditional User Profile Dropdown (Desktop) */}
+                            {isAuthenticated && user && (
+                                <div ref={profileRef} className="relative hidden sm:block">
+                                    <button
+                                        onClick={() => setProfileOpen(!profileOpen)}
+                                        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[var(--hover-bg)] transition-colors cursor-pointer"
+                                        aria-label="User profile menu"
+                                    >
+                                        <img
+                                            src={user.avatarUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name}`}
+                                            alt={user.name}
+                                            className="w-8 h-8 rounded-full border border-indigo-200 dark:border-indigo-500/20"
+                                        />
+                                        <div className="text-left">
+                                            <div className="text-sm font-semibold text-[var(--foreground)] truncate max-w-[100px]">{user.name}</div>
+                                            <div className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{user.role}</div>
+                                        </div>
+                                        <ChevronDown className={`w-3.5 h-3.5 text-[var(--text-muted)] transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
+                                    </button>
+
+                                    {/* Dropdown Menu */}
+                                    {profileOpen && (
+                                        <div className="absolute right-0 top-full mt-2 w-56 glass-panel rounded-xl border border-[var(--card-border)] shadow-xl z-50 animate-fade-in-up">
+                                            <div className="p-4 border-b border-[var(--card-border)]">
+                                                <div className="flex items-center gap-3">
+                                                    <img
+                                                        src={user.avatarUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name}`}
+                                                        alt={user.name}
+                                                        className="w-10 h-10 rounded-full border border-indigo-200 dark:border-indigo-500/20"
+                                                    />
+                                                    <div>
+                                                        <div className="font-semibold text-sm text-[var(--foreground)]">{user.name}</div>
+                                                        <div className="text-xs text-[var(--text-muted)]">{user.email}</div>
+                                                        <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-950 dark:border-indigo-500/30 dark:text-indigo-400 mt-1">
+                                                            {user.role}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="p-2">
+                                                <button
+                                                    onClick={() => {
+                                                        setProfileOpen(false);
+                                                        router.push('/dashboard');
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-colors cursor-pointer"
+                                                >
+                                                    <LayoutDashboard className="w-4 h-4" />
+                                                    Dashboard
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setProfileOpen(false);
+                                                        dispatch(logout());
+                                                        dispatch(showToast({ message: 'Logged out successfully', type: 'success' }));
+                                                        router.push('/');
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors cursor-pointer"
+                                                >
+                                                    <LogOut className="w-4 h-4" />
+                                                    Sign Out
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* CTA Button - shown when NOT authenticated */}
+                            {!isAuthenticated && (
+                                <button
+                                    onClick={() => router.push('/auth')}
+                                    className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-0.5 transition-all cursor-pointer"
+                                >
+                                    Get Started
+                                    <ArrowRight className="w-4 h-4" />
+                                </button>
+                            )}
+
                             {/* Mobile menu toggle */}
                             <button
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -213,13 +306,59 @@ export default function HomePage() {
                             <a href="#testimonials" className="text-sm font-medium text-[var(--text-muted)] hover:text-indigo-500 transition-colors py-2">
                                 Testimonials
                             </a>
-                            <button
-                                onClick={() => isAuthenticated ? router.push('/dashboard') : router.push('/auth')}
-                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all cursor-pointer"
-                            >
-                                {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
-                                <ArrowRight className="w-4 h-4" />
-                            </button>
+
+                            {/* Mobile: Authenticated user profile section */}
+                            {isAuthenticated && user && (
+                                <div className="border-t border-[var(--card-border)] pt-3 mt-1">
+                                    <div className="flex items-center gap-3 px-2 py-2">
+                                        <img
+                                            src={user.avatarUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name}`}
+                                            alt={user.name}
+                                            className="w-9 h-9 rounded-full border border-indigo-200 dark:border-indigo-500/20"
+                                        />
+                                        <div>
+                                            <div className="text-sm font-semibold text-[var(--foreground)]">{user.name}</div>
+                                            <div className="text-xs text-[var(--text-muted)]">{user.email}</div>
+                                            <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-950 dark:border-indigo-500/30 dark:text-indigo-400 mt-1">
+                                                {user.role}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            setMobileMenuOpen(false);
+                                            router.push('/dashboard');
+                                        }}
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-colors cursor-pointer"
+                                    >
+                                        <LayoutDashboard className="w-4 h-4" />
+                                        Dashboard
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setMobileMenuOpen(false);
+                                            dispatch(logout());
+                                            dispatch(showToast({ message: 'Logged out successfully', type: 'success' }));
+                                            router.push('/');
+                                        }}
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors cursor-pointer"
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        Sign Out
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Mobile: CTA button for guests */}
+                            {!isAuthenticated && (
+                                <button
+                                    onClick={() => router.push('/auth')}
+                                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all cursor-pointer"
+                                >
+                                    Get Started
+                                    <ArrowRight className="w-4 h-4" />
+                                </button>
+                            )}
                         </div>
                     </div>
                 )}

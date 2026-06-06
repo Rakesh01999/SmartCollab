@@ -3,7 +3,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setSearchQuery, showToast, toggleSidebar, triggerRefresh } from '../../store/appSlice';
 import { logout } from '../../store/authSlice';
-import { Menu, Search, Database, Bell, RefreshCw, LogOut, User, ChevronDown } from 'lucide-react';
+import { Menu, Search, Database, Bell, RefreshCw, LogOut, User, ChevronDown, Home } from 'lucide-react';
 import { authAPI } from '../../lib/api';
 import { useState, ChangeEvent, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -143,6 +143,16 @@ export default function Navbar({ title }: NavbarProps) {
                   </div>
                 </div>
                 <div className="p-2">
+                  <button
+                    onClick={() => {
+                      setProfileOpen(false);
+                      router.push('/');
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-colors cursor-pointer"
+                  >
+                    <Home className="w-4 h-4" />
+                    Home Page
+                  </button>
                   <button
                     onClick={() => {
                       setProfileOpen(false);
