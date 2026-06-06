@@ -60,7 +60,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-950 via-slate-950 to-black p-4 relative overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-100 via-slate-50 to-white dark:from-indigo-950 dark:via-slate-950 dark:to-black p-4 relative overflow-hidden">
       {/* Dynamic background ambient glowing circles */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -73,23 +73,23 @@ export default function AuthPage() {
             <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-lg text-white shadow-[0_0_20px_rgba(99,102,241,0.6)]">
               S
             </div>
-            <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-violet-400">
+            <span className="font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 dark:from-indigo-400 dark:via-purple-400 dark:to-violet-400">
               SmartCollab
             </span>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-800 dark:text-white leading-tight">
               Manage projects, assign tasks, and track team progress.
             </h2>
-            <p className="text-slate-400 text-sm sm:text-base max-w-md">
+            <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-md">
               A premium, role-based platform designed to organize workloads, automate conflict validation, and deliver insights into team productivity.
             </p>
           </div>
 
           {/* Quick Login Section */}
           <div className="pt-4 space-y-3">
-            <span className="text-xs font-bold text-slate-500 tracking-wider uppercase flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase flex items-center gap-2">
               <Shield className="w-3.5 h-3.5 text-indigo-500" />
               Demo Login Credentials
             </span>
@@ -98,31 +98,31 @@ export default function AuthPage() {
               <button
                 onClick={() => handleQuickLogin('admin@system.com')}
                 disabled={loading}
-                className="flex flex-col items-start p-3 bg-slate-900/60 border border-slate-800 hover:border-emerald-500/30 hover:bg-slate-900 rounded-xl transition-all text-left cursor-pointer group"
+                className="flex flex-col items-start p-3 bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-500/30 hover:bg-white dark:hover:bg-slate-900 rounded-xl transition-all text-left cursor-pointer group"
               >
-                <span className="text-xs font-bold text-emerald-400 group-hover:text-emerald-300">Admin Account</span>
-                <span className="text-[10px] text-slate-500 mt-1 truncate w-full">admin@system.com</span>
-                <span className="text-[9px] text-slate-600 mt-0.5 font-mono">pass: password123</span>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-500 dark:group-hover:text-emerald-300">Admin Account</span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 truncate w-full">admin@system.com</span>
+                <span className="text-[9px] text-slate-400 dark:text-slate-600 mt-0.5 font-mono">pass: password123</span>
               </button>
 
               <button
                 onClick={() => handleQuickLogin('pm@system.com')}
                 disabled={loading}
-                className="flex flex-col items-start p-3 bg-slate-900/60 border border-slate-800 hover:border-indigo-500/30 hover:bg-slate-900 rounded-xl transition-all text-left cursor-pointer group"
+                className="flex flex-col items-start p-3 bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500/30 hover:bg-white dark:hover:bg-slate-900 rounded-xl transition-all text-left cursor-pointer group"
               >
-                <span className="text-xs font-bold text-indigo-400 group-hover:text-indigo-300">Project Manager</span>
-                <span className="text-[10px] text-slate-500 mt-1 truncate w-full">pm@system.com</span>
-                <span className="text-[9px] text-slate-600 mt-0.5 font-mono">pass: password123</span>
+                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-300">Project Manager</span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 truncate w-full">pm@system.com</span>
+                <span className="text-[9px] text-slate-400 dark:text-slate-600 mt-0.5 font-mono">pass: password123</span>
               </button>
 
               <button
                 onClick={() => handleQuickLogin('member@system.com')}
                 disabled={loading}
-                className="flex flex-col items-start p-3 bg-slate-900/60 border border-slate-800 hover:border-purple-500/30 hover:bg-slate-900 rounded-xl transition-all text-left cursor-pointer group"
+                className="flex flex-col items-start p-3 bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-purple-300 dark:hover:border-purple-500/30 hover:bg-white dark:hover:bg-slate-900 rounded-xl transition-all text-left cursor-pointer group"
               >
-                <span className="text-xs font-bold text-purple-400 group-hover:text-purple-300">Team Member</span>
-                <span className="text-[10px] text-slate-500 mt-1 truncate w-full">member@system.com</span>
-                <span className="text-[9px] text-slate-600 mt-0.5 font-mono">pass: password123</span>
+                <span className="text-xs font-bold text-purple-600 dark:text-purple-400 group-hover:text-purple-500 dark:group-hover:text-purple-300">Team Member</span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 truncate w-full">member@system.com</span>
+                <span className="text-[9px] text-slate-400 dark:text-slate-600 mt-0.5 font-mono">pass: password123</span>
               </button>
             </div>
           </div>
@@ -130,12 +130,12 @@ export default function AuthPage() {
 
         {/* Right column: Login/Register Box */}
         <div className="lg:col-span-6 flex items-center justify-center px-4">
-          <div className="w-full max-w-md glass-panel p-8 rounded-2xl shadow-2xl border-slate-800/80 animate-fade-in-up">
+          <div className="w-full max-w-md glass-panel p-8 rounded-2xl shadow-2xl border-slate-200/80 dark:border-slate-800/80 animate-fade-in-up">
             <div className="mb-8">
-              <h3 className="text-2xl font-bold text-white">
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-white">
                 {isLogin ? 'Sign In' : 'Create Account'}
               </h3>
-              <p className="text-xs text-slate-500 mt-1.5">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">
                 {isLogin
                   ? 'Access your workspace and view team activity.'
                   : 'Register a new developer account under the system.'}
@@ -145,52 +145,52 @@ export default function AuthPage() {
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               {!isLogin && (
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-400" htmlFor="name-input">Full Name</label>
+                  <label className="text-xs font-semibold text-slate-500 dark:text-slate-400" htmlFor="name-input">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-3 w-4 h-4 text-slate-500" />
+                    <User className="absolute left-3 top-3 w-4 h-4 text-slate-400 dark:text-slate-500" />
                     <input
                       type="text"
                       id="name-input"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Sarah Connor"
-                      className="w-full pl-10 pr-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500"
+                      className="w-full pl-10 pr-4 py-2.5 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-indigo-500"
                     />
                   </div>
                 </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400" htmlFor="email-input">Email Address</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400" htmlFor="email-input">Email Address</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 w-4 h-4 text-slate-500" />
+                  <Mail className="absolute left-3 top-3 w-4 h-4 text-slate-400 dark:text-slate-500" />
                   <input
                     type="email"
                     id="email-input"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="email@example.com"
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400" htmlFor="password-input">Password</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400" htmlFor="password-input">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 w-4 h-4 text-slate-500" />
+                  <Lock className="absolute left-3 top-3 w-4 h-4 text-slate-400 dark:text-slate-500" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     id="password-input"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-2.5 bg-slate-950/60 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500"
+                    className="w-full pl-10 pr-10 py-2.5 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-indigo-500"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                    className="absolute right-3 top-3 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -200,12 +200,12 @@ export default function AuthPage() {
 
               {!isLogin && (
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-400" htmlFor="role-select">Access Level (Role)</label>
+                  <label className="text-xs font-semibold text-slate-500 dark:text-slate-400" htmlFor="role-select">Access Level (Role)</label>
                   <select
                     id="role-select"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-950/60 border border-slate-800 rounded-lg text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2.5 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm text-slate-600 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
                   >
                     <option value="Team Member">Team Member</option>
                     <option value="Project Manager">Project Manager</option>
@@ -228,13 +228,13 @@ export default function AuthPage() {
               </button>
             </form>
 
-            <div className="mt-6 pt-4 border-t border-slate-900 flex justify-center text-xs">
+            <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-900 flex justify-center text-xs">
               <button
                 onClick={() => {
                   setIsLogin(!isLogin);
                   dispatch(loginFailure(''));
                 }}
-                className="text-slate-400 hover:text-indigo-400 transition-colors cursor-pointer"
+                className="text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors cursor-pointer"
               >
                 {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Sign In'}
               </button>

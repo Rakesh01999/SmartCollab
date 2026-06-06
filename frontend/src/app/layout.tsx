@@ -25,8 +25,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="en"
       className={`${outfit.variable} ${inter.variable} h-full scroll-smooth`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500 selection:text-white antialiased flex flex-col">
+      <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] font-sans selection:bg-indigo-500 selection:text-white antialiased flex flex-col">
         <Providers>{children}</Providers>
       </body>
     </html>

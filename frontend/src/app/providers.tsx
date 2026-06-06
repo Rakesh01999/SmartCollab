@@ -4,12 +4,15 @@ import { Provider } from 'react-redux';
 import { store } from '../store/store';
 import Toast from '../components/Common/Toast';
 import { ReactNode } from 'react';
+import { ThemeProvider } from 'next-themes';
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
-    <Provider store={store}>
-      {children}
-      <Toast />
-    </Provider>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <Provider store={store}>
+        {children}
+        <Toast />
+      </Provider>
+    </ThemeProvider>
   );
 }

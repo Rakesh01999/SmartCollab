@@ -38,17 +38,17 @@ export default function Navbar({ title, onRefresh }: NavbarProps) {
   };
 
   return (
-    <header className="h-16 glass-panel border-b border-slate-800/80 px-4 flex items-center justify-between sticky top-0 z-20">
+    <header className="h-16 glass-panel border-b border-slate-200/80 dark:border-slate-800/80 px-4 flex items-center justify-between sticky top-0 z-20">
       {/* Left section: mobile sidebar trigger & Page title */}
       <div className="flex items-center gap-3">
         <button
           onClick={() => dispatch(toggleSidebar())}
-          className="p-1.5 rounded-md hover:bg-slate-800/60 text-slate-400 hover:text-slate-200 transition-colors lg:hidden cursor-pointer"
+          className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors lg:hidden cursor-pointer"
           aria-label="Toggle menu"
         >
           <Menu className="w-5 h-5" />
         </button>
-        <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-slate-200 hidden md:block">
+        <h1 className="font-bold text-lg md:text-xl lg:text-2xl text-slate-700 dark:text-slate-200 hidden md:block">
           {title}
         </h1>
       </div>
@@ -63,7 +63,7 @@ export default function Navbar({ title, onRefresh }: NavbarProps) {
             value={searchQuery}
             onChange={handleSearchChange}
             id="global-search-input"
-            className="w-full pl-10 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-lg text-sm md:text-base text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all"
           />
         </div>
       </div>
@@ -73,7 +73,7 @@ export default function Navbar({ title, onRefresh }: NavbarProps) {
         <button
           onClick={handleSeedDatabase}
           disabled={seeding}
-          className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-indigo-500/20 hover:border-indigo-500/50 text-indigo-400 rounded-lg text-xs md:text-sm font-semibold hover:bg-indigo-950/20 transition-all disabled:opacity-50 cursor-pointer"
+          className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-500/20 hover:border-indigo-400 dark:hover:border-indigo-500/50 text-indigo-600 dark:text-indigo-400 rounded-lg text-xs md:text-sm font-semibold hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all disabled:opacity-50 cursor-pointer"
           title="Reset database to default demo data"
         >
           {seeding ? (
@@ -84,7 +84,7 @@ export default function Navbar({ title, onRefresh }: NavbarProps) {
           <span className="hidden sm:inline">Seed Demo Data</span>
         </button>
 
-        <div className="relative p-1.5 rounded-md hover:bg-slate-800/40 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer">
+        <div className="relative p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer">
           <Bell className="w-5 h-5" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-indigo-500 rounded-full"></span>
         </div>
@@ -94,7 +94,7 @@ export default function Navbar({ title, onRefresh }: NavbarProps) {
             <img
               src={user.avatarUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name}`}
               alt={user.name}
-              className="w-8 h-8 rounded-full border border-indigo-500/20"
+              className="w-8 h-8 rounded-full border border-indigo-200 dark:border-indigo-500/20"
             />
           </div>
         )}

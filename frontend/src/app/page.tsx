@@ -56,10 +56,10 @@ export default function Home() {
 
   if (sessionChecking) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-slate-950 text-slate-100">
+      <div className="min-h-screen w-full flex items-center justify-center bg-[var(--background)] text-[var(--foreground)]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-sm text-slate-400 font-medium">Restoring secure session...</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">Restoring secure session...</span>
         </div>
       </div>
     );
@@ -87,7 +87,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-950 text-slate-100 relative overflow-hidden">
+    <div className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] relative overflow-hidden transition-colors duration-300">
       {/* Dynamic ambient glowing light */}
       <div className="absolute top-0 right-0 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] bg-violet-600/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -102,10 +102,10 @@ export default function Home() {
         <Navbar title={viewTitles[currentView]} onRefresh={handleRefreshData} />
 
         {/* Dynamic Viewport */}
-        <main className="flex-1 flex flex-col min-h-0 bg-slate-950/40 pb-12">
+        <main className="flex-1 flex flex-col min-h-0 bg-[var(--background)] pb-12 transition-colors duration-300">
           {viewComponents[currentView] || (
             <div className="flex-1 flex items-center justify-center">
-              <span className="text-slate-500 text-sm">Select a section from the sidebar.</span>
+              <span className="text-slate-400 dark:text-slate-500 text-sm">Select a section from the sidebar.</span>
             </div>
           )}
         </main>
