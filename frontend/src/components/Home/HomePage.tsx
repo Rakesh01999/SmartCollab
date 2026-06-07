@@ -972,38 +972,47 @@ export default function HomePage() {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        {testimonials.map((t, idx) => (
-                            <div
-                                key={t.name}
-                                className={`glass-panel rounded-2xl p-5 glass-card-hover transition-all duration-700 ${isAnimated('testimonials') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-                                    }`}
-                                style={{ transitionDelay: isAnimated('testimonials') ? `${idx * 150}ms` : '0ms' }}
-                            >
-                                {/* Stars */}
-                                <div className="flex gap-1 mb-3">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    {/* Marquee container */}
+                    <div className="relative overflow-hidden">
+                        {/* Fade edges */}
+                        <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-20 bg-gradient-to-r from-[var(--background)] to-transparent z-10 pointer-events-none"></div>
+                        <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-20 bg-gradient-to-l from-[var(--background)] to-transparent z-10 pointer-events-none"></div>
+
+                        <div className="flex animate-scroll-right-slow">
+                            {[...Array(2)].map((_, dupIdx) => (
+                                <div key={dupIdx} className="flex items-center gap-3 sm:gap-5 px-2 sm:px-3 whitespace-nowrap">
+                                    {testimonials.map((t) => (
+                                        <div
+                                            key={`${t.name}-${dupIdx}`}
+                                            className="glass-panel rounded-2xl p-4 sm:p-5 glass-card-hover w-[280px] sm:w-[340px] md:w-[380px] flex-shrink-0 whitespace-normal"
+                                        >
+                                            {/* Stars */}
+                                            <div className="flex gap-1 mb-3">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                                ))}
+                                            </div>
+
+                                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
+                                                &ldquo;{t.text}&rdquo;
+                                            </p>
+
+                                            <div className="flex items-center gap-3">
+                                                <img
+                                                    src={t.avatar}
+                                                    alt={t.name}
+                                                    className="w-10 h-10 rounded-full border border-[var(--card-border)]"
+                                                />
+                                                <div>
+                                                    <div className="font-semibold text-sm">{t.name}</div>
+                                                    <div className="text-xs text-[var(--text-muted)]">{t.role}</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     ))}
                                 </div>
-
-                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
-                                    &ldquo;{t.text}&rdquo;
-                                </p>
-
-                                <div className="flex items-center gap-3">
-                                    <img
-                                        src={t.avatar}
-                                        alt={t.name}
-                                        className="w-10 h-10 rounded-full border border-[var(--card-border)]"
-                                    />
-                                    <div>
-                                        <div className="font-semibold text-sm">{t.name}</div>
-                                        <div className="text-xs text-[var(--text-muted)]">{t.role}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>

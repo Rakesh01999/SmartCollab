@@ -3,6 +3,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../store/authSlice';
 import { toggleSidebar, setSidebarOpen, showToast } from '../../store/appSlice';
+import { useConfirm } from '../../hooks/useConfirm';
 import {
   LayoutDashboard,
   FolderKanban,
@@ -50,10 +51,21 @@ export default function Sidebar() {
     }));
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(showToast({ message: 'Logged out successfully', type: 'success' }));
-    router.push('/');
+  const { confirm } = useConfirm();
+
+  const handleLogout = async () => {
+    const confirmed = await confirm({
+      title: 'Logout',
+      message: 'Are you sure you want to log out of SmartCollab?',
+      confirmText: 'Logout',
+      cancelText: 'Stay',
+      variant: 'warning',
+    });
+    if (confirmed) {
+      dispatch(logout());
+      dispatch(showToast({ message: 'Logged out successfully', type: 'success' }));
+      router.push('/');
+    }
   };
 
   const handleNavClick = (path: string) => {

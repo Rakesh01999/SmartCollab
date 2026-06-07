@@ -6,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { tasksAPI, projectsAPI, teamAPI } from '../../lib/api';
 import { showToast, setActiveProjectId } from '../../store/appSlice';
+import { useConfirm } from '../../hooks/useConfirm';
 import {
   Plus,
   Search,
@@ -230,9 +231,18 @@ export default function TasksView() {
     }
   };
 
+  const { confirm } = useConfirm();
+
   const handleDeleteTask = async (id: string) => {
     if (!isAuthorized) return;
-    if (confirm('Delete this task permanently?')) {
+    const confirmed = await confirm({
+      title: 'Delete Task',
+      message: 'Delete this task permanently? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Keep It',
+      variant: 'danger',
+    });
+    if (confirmed) {
       try {
         await tasksAPI.delete(id);
         dispatch(showToast({ message: 'Task deleted successfully', type: 'success' }));
@@ -348,7 +358,14 @@ export default function TasksView() {
   // Bulk delete
   const handleBulkDelete = async () => {
     if (!isAuthorized || selectedTaskIds.length === 0) return;
-    if (confirm(`Are you sure you want to delete all ${selectedTaskIds.length} selected tasks?`)) {
+    const confirmed = await confirm({
+      title: 'Bulk Delete Tasks',
+      message: `Are you sure you want to delete all ${selectedTaskIds.length} selected tasks? This action cannot be undone.`,
+      confirmText: 'Delete All',
+      cancelText: 'Cancel',
+      variant: 'danger',
+    });
+    if (confirmed) {
       try {
         setLoading(true);
         for (let taskId of selectedTaskIds) {

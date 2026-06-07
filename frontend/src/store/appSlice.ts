@@ -1,5 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export interface ConfirmDialogState {
+  open: boolean;
+  title: string;
+  message: string;
+  confirmText: string;
+  cancelText: string;
+  variant: 'danger' | 'warning' | 'info';
+}
+
 export interface AppState {
   activeProjectId: string;
   searchQuery: string;
@@ -10,7 +19,17 @@ export interface AppState {
     id: number;
   } | null;
   refreshCounter: number;
+  confirmDialog: ConfirmDialogState;
 }
+
+const initialConfirmDialog: ConfirmDialogState = {
+  open: false,
+  title: '',
+  message: '',
+  confirmText: 'Confirm',
+  cancelText: 'Cancel',
+  variant: 'danger',
+};
 
 const initialState: AppState = {
   activeProjectId: 'all',
@@ -18,6 +37,7 @@ const initialState: AppState = {
   sidebarOpen: true,
   toast: null,
   refreshCounter: 0,
+  confirmDialog: initialConfirmDialog,
 };
 
 const appSlice = createSlice({
@@ -49,6 +69,12 @@ const appSlice = createSlice({
     hideToast(state) {
       state.toast = null;
     },
+    showConfirmDialog(state, action: PayloadAction<Omit<ConfirmDialogState, 'open'>>) {
+      state.confirmDialog = { ...action.payload, open: true };
+    },
+    hideConfirmDialog(state) {
+      state.confirmDialog = { ...initialConfirmDialog };
+    },
   },
 });
 
@@ -59,7 +85,9 @@ export const {
   setSidebarOpen,
   showToast,
   hideToast,
-  triggerRefresh
+  triggerRefresh,
+  showConfirmDialog,
+  hideConfirmDialog
 } = appSlice.actions;
 
 export default appSlice.reducer;

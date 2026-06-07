@@ -6,6 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { projectsAPI, teamAPI, tasksAPI } from '../../lib/api';
 import { showToast } from '../../store/appSlice';
+import { useConfirm } from '../../hooks/useConfirm';
 import {
   FolderPlus,
   Calendar,
@@ -127,9 +128,18 @@ export default function ProjectsView() {
     }
   };
 
+  const { confirm } = useConfirm();
+
   const handleDeleteProject = async (id: string) => {
     if (!isAuthorized) return;
-    if (confirm('Are you absolutely sure you want to delete this project and all its tasks? This action is permanent.')) {
+    const confirmed = await confirm({
+      title: 'Delete Project',
+      message: 'Are you absolutely sure you want to delete this project and all its tasks? This action is permanent and cannot be undone.',
+      confirmText: 'Delete Project',
+      cancelText: 'Keep It',
+      variant: 'danger',
+    });
+    if (confirmed) {
       try {
         await projectsAPI.delete(id);
         dispatch(showToast({ message: 'Project deleted successfully', type: 'success' }));

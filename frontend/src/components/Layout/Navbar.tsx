@@ -1,10 +1,9 @@
 'use client';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setSearchQuery, showToast, toggleSidebar, triggerRefresh } from '../../store/appSlice';
+import { setSearchQuery, showToast, toggleSidebar } from '../../store/appSlice';
 import { logout } from '../../store/authSlice';
-import { Menu, Search, Database, Bell, RefreshCw, LogOut, User, ChevronDown, Home } from 'lucide-react';
-import { authAPI } from '../../lib/api';
+import { Menu, Search, Bell, LogOut, User, ChevronDown, Home } from 'lucide-react';
 import { useState, ChangeEvent, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { RootState, AppDispatch } from '../../store/store';
@@ -19,7 +18,6 @@ export default function Navbar({ title }: NavbarProps) {
   const searchQuery = useSelector((state: RootState) => state.app.searchQuery);
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const user = useSelector((state: RootState) => state.auth.user);
-  const [seeding, setSeeding] = useState<boolean>(false);
   const [profileOpen, setProfileOpen] = useState<boolean>(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
@@ -36,19 +34,6 @@ export default function Navbar({ title }: NavbarProps) {
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(setSearchQuery(e.target.value));
-  };
-
-  const handleSeedDatabase = async () => {
-    try {
-      setSeeding(true);
-      const res = await authAPI.seed();
-      dispatch(showToast({ message: res.data.message || 'Database seeded successfully!', type: 'success' }));
-      dispatch(triggerRefresh());
-    } catch (error: any) {
-      dispatch(showToast({ message: error.message || 'Seeding failed', type: 'error' }));
-    } finally {
-      setSeeding(false);
-    }
   };
 
   return (
@@ -82,22 +67,8 @@ export default function Navbar({ title }: NavbarProps) {
         </div>
       </div>
 
-      {/* Right section: Seed DB & Notifications */}
+      {/* Right section: Notifications & Profile */}
       <div className="flex items-center gap-2">
-        <button
-          onClick={handleSeedDatabase}
-          disabled={seeding}
-          className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 border border-sky-200 dark:border-sky-500/20 hover:border-sky-500 dark:hover:border-sky-500/50 text-sky-700 dark:text-sky-400 rounded-lg text-xs md:text-sm font-semibold hover:bg-sky-50 dark:hover:bg-sky-950/20 transition-all disabled:opacity-50 cursor-pointer"
-          title="Reset database to default demo data"
-        >
-          {seeding ? (
-            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <Database className="w-3.5 h-3.5" />
-          )}
-          <span className="hidden sm:inline">Seed Demo Data</span>
-        </button>
-
         <div className="relative p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer">
           <Bell className="w-5 h-5" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-sky-600 rounded-full"></span>

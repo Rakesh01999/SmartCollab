@@ -298,6 +298,25 @@ body {
   animation: scrollLeft 30s linear infinite;
 }
 
+.animate-scroll-left-slow {
+  animation: scrollLeft 50s linear infinite;
+}
+
+/* Landing Page — Testimonial marquee (left to right) */
+@keyframes scrollRight {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-scroll-right-slow {
+  animation: scrollRight 50s linear infinite;
+}
+
 /* Landing Page — Workflow step pulse glow */
 @keyframes pulseGlow {
 
