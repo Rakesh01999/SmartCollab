@@ -6,6 +6,13 @@ Built using a separated architecture: **Next.js (App Router) + Tailwind CSS + Re
 
 ---
 
+## 🚀 Live Demo & API
+
+- **Frontend Application**: [https://smartcollab-sc.vercel.app/](https://smartcollab-sc.vercel.app/)
+- **Backend API Base URL**: [https://smart-collab-backend.vercel.app/](https://smart-collab-backend.vercel.app/)
+
+---
+
 ## Technical Features
 
 1. **Role-Based Access Control (RBAC)**:
