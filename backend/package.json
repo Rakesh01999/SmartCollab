@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "ts-node server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "vercel-build": "echo 'Vercel builds serverless API automatically. Skipping tsc.'"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
