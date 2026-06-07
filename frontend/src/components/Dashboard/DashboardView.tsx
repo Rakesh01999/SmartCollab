@@ -55,7 +55,7 @@ export default function DashboardView() {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
           <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">Analyzing system productivity...</span>
         </div>
       </div>
@@ -114,8 +114,8 @@ export default function DashboardView() {
 
   // KPI card configuration
   const kpis = [
-    { title: 'Total Projects', value: totalProjects, icon: <Folder className="w-5 h-5" />, color: 'from-blue-50 to-indigo-50 border-blue-200 text-blue-600 dark:from-blue-600/20 dark:to-indigo-600/5 dark:border-blue-500/20 dark:text-blue-400' },
-    { title: 'Total Tasks', value: totalTasks, icon: <ListTodo className="w-5 h-5" />, color: 'from-indigo-50 to-violet-50 border-indigo-200 text-indigo-600 dark:from-indigo-600/20 dark:to-violet-600/5 dark:border-indigo-500/20 dark:text-indigo-400' },
+    { title: 'Total Projects', value: totalProjects, icon: <Folder className="w-5 h-5" />, color: 'from-blue-50 to-sky-50 border-blue-200 text-blue-600 dark:from-blue-600/20 dark:to-sky-600/5 dark:border-blue-500/20 dark:text-blue-400' },
+    { title: 'Total Tasks', value: totalTasks, icon: <ListTodo className="w-5 h-5" />, color: 'from-sky-50 to-teal-50 border-sky-200 text-sky-700 dark:from-sky-600/20 dark:to-teal-600/5 dark:border-sky-500/20 dark:text-sky-400' },
     { title: 'Completed Tasks', value: completedTasks, icon: <CheckCircle2 className="w-5 h-5" />, color: 'from-emerald-50 to-teal-50 border-emerald-200 text-emerald-600 dark:from-emerald-600/20 dark:to-teal-600/5 dark:border-emerald-500/20 dark:text-emerald-400' },
     { title: 'Pending Tasks', value: pendingTasks, icon: <Clock className="w-5 h-5" />, color: 'from-amber-50 to-orange-50 border-amber-200 text-amber-600 dark:from-amber-600/20 dark:to-orange-600/5 dark:border-amber-500/20 dark:text-amber-400' },
     { title: 'Overdue Tasks', value: overdueTasks, icon: <AlertCircle className="w-5 h-5" />, color: 'from-rose-50 to-red-50 border-rose-200 text-rose-600 dark:from-rose-600/20 dark:to-red-600/5 dark:border-rose-500/20 dark:text-rose-400 animate-pulse' },
@@ -127,7 +127,7 @@ export default function DashboardView() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl">
         <div>
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+            <Sparkles className="w-5 h-5 text-sky-600 dark:text-sky-400" />
             Dashboard Insights
           </h2>
           <p className="text-xs md:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">
@@ -136,7 +136,7 @@ export default function DashboardView() {
         </div>
         <button
           onClick={() => router.push('/tasks')}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs md:text-sm lg:text-base font-semibold transition-all shadow-lg shadow-indigo-600/20 cursor-pointer self-start md:self-auto"
+          className="flex items-center gap-2 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-xs md:text-sm lg:text-base font-semibold transition-all shadow-lg shadow-sky-700/20 cursor-pointer self-start md:self-auto"
         >
           View Kanban Board
           <ArrowRight className="w-4 h-4" />
@@ -187,12 +187,12 @@ export default function DashboardView() {
             {/* Medium Priority */}
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs md:text-sm">
-                <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Medium Priority</span>
+                <span className="text-sky-700 dark:text-sky-400 font-semibold">Medium Priority</span>
                 <span className="text-slate-500 dark:text-slate-400">{mediumPriorityCount} tasks</span>
               </div>
               <div className="h-2 bg-slate-200 dark:bg-slate-950 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-sky-600 to-teal-500 transition-all duration-500"
                   style={{ width: `${totalTasks > 0 ? (mediumPriorityCount / totalTasks) * 100 : 0}%` }}
                 ></div>
               </div>
@@ -300,7 +300,7 @@ export default function DashboardView() {
                         ? 'bg-amber-500'
                         : proj.completionPercent === 100
                           ? 'bg-emerald-500'
-                          : 'bg-indigo-500'
+                          : 'bg-sky-600'
                         }`}
                       style={{ width: `${proj.completionPercent}%` }}
                     ></div>
@@ -320,7 +320,7 @@ export default function DashboardView() {
             <span>Overall completion trends.</span>
             <button
               onClick={() => router.push('/projects')}
-              className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-bold cursor-pointer hover:underline"
+              className="text-sky-700 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 font-bold cursor-pointer hover:underline"
             >
               Manage Projects
             </button>
@@ -341,7 +341,7 @@ export default function DashboardView() {
             </div>
             <button
               onClick={() => router.push('/team')}
-              className="text-xs md:text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-bold cursor-pointer"
+              className="text-xs md:text-sm text-sky-700 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 font-bold cursor-pointer"
             >
               View Team
             </button>
@@ -370,7 +370,7 @@ export default function DashboardView() {
                     <div className="flex items-center gap-2 mt-1.5">
                       <div className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-950 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-500"
+                          className="h-full bg-gradient-to-r from-sky-600 to-emerald-400 transition-all duration-500"
                           style={{ width: `${total > 0 ? (completed / total) * 100 : 0}%` }}
                         ></div>
                       </div>
@@ -397,7 +397,7 @@ export default function DashboardView() {
             </div>
             <button
               onClick={() => router.push('/activities')}
-              className="text-xs md:text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-bold cursor-pointer"
+              className="text-xs md:text-sm text-sky-700 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 font-bold cursor-pointer"
             >
               View Logs
             </button>
@@ -406,7 +406,7 @@ export default function DashboardView() {
           <div className="space-y-3.5 max-h-[280px] overflow-y-auto pr-1">
             {activities.map((act, idx) => (
               <div key={act._id || idx} className="flex gap-3 text-xs md:text-sm leading-relaxed">
-                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0 animate-pulse"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-sky-600 mt-2 flex-shrink-0 animate-pulse"></div>
                 <div className="flex-1 min-w-0">
                   <p className="text-slate-600 dark:text-slate-300 font-medium">{act.text}</p>
                   <span className="text-[10px] md:text-xs text-slate-400 dark:text-slate-500 block mt-0.5">

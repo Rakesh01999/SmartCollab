@@ -173,7 +173,7 @@ export default function ProjectsView() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Users className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+            <Users className="w-5 h-5 text-sky-600 dark:text-sky-400" />
             Project Board
           </h2>
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Manage project scope, assignments, and check timelines.</p>
@@ -182,7 +182,7 @@ export default function ProjectsView() {
         {isAuthorized && (
           <button
             onClick={handleOpenCreateModal}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm md:text-base font-semibold transition-all shadow-lg shadow-indigo-600/20 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-sm md:text-base font-semibold transition-all shadow-lg shadow-sky-700/20 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             New Project
@@ -199,7 +199,7 @@ export default function ProjectsView() {
             placeholder="Search projects by name/description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-600 transition-all"
           />
         </div>
         <div className="flex items-center gap-2 w-full md:w-auto">
@@ -207,7 +207,7 @@ export default function ProjectsView() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full md:w-44 px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="w-full md:w-44 px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-sky-600"
           >
             <option value="all">All Statuses</option>
             <option value="Active">Active</option>
@@ -220,7 +220,7 @@ export default function ProjectsView() {
       {/* Projects Grid */}
       {loading ? (
         <div className="flex justify-center items-center py-16">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -255,7 +255,7 @@ export default function ProjectsView() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => handleOpenEditModal(proj)}
-                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors cursor-pointer"
+                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
                           title="Edit project"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -289,7 +289,7 @@ export default function ProjectsView() {
                           ? 'bg-amber-500'
                           : progressRatio === 100
                             ? 'bg-emerald-500'
-                            : 'bg-indigo-500'
+                            : 'bg-sky-600'
                           }`}
                         style={{ width: `${progressRatio}%` }}
                       ></div>
@@ -300,7 +300,7 @@ export default function ProjectsView() {
                 {/* Footer specs */}
                 <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-900 flex justify-between items-center">
                   <div className="flex items-center gap-1 text-[10px] md:text-xs font-semibold text-slate-500">
-                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                    <Calendar className="w-3.5 h-3.5 text-sky-600" />
                     <span>
                       {daysLeft < 0
                         ? `Overdue by ${Math.abs(daysLeft)}d`
@@ -331,7 +331,7 @@ export default function ProjectsView() {
                       <div className="relative">
                         <button
                           onClick={() => setActiveAssignProjId(activeAssignProjId === proj._id ? null : proj._id)}
-                          className="w-5.5 h-5.5 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-800 hover:border-indigo-500 text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 flex items-center justify-center transition-colors cursor-pointer"
+                          className="w-5.5 h-5.5 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-800 hover:border-sky-600 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 flex items-center justify-center transition-colors cursor-pointer"
                           title="Assign member to project"
                         >
                           <UserPlus className="w-3 h-3" />
@@ -349,7 +349,7 @@ export default function ProjectsView() {
                                 <button
                                   key={member._id}
                                   onClick={() => handleAddMemberToProject(proj._id, member._id as string)}
-                                  className="w-full text-left px-2 py-1 text-xs md:text-sm text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 hover:text-indigo-600 dark:hover:text-indigo-400 rounded transition-colors flex items-center gap-1.5 cursor-pointer"
+                                  className="w-full text-left px-2 py-1 text-xs md:text-sm text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-sky-950/40 hover:text-sky-700 dark:hover:text-sky-400 rounded transition-colors flex items-center gap-1.5 cursor-pointer"
                                 >
                                   <img src={member.avatarUrl} alt="" className="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-800" />
                                   <span className="truncate">{member.name}</span>
@@ -381,7 +381,7 @@ export default function ProjectsView() {
           <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl animate-fade-in-up">
             <div className="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-slate-800">
               <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <FolderPlus className="w-5 h-5 text-indigo-500" />
+                <FolderPlus className="w-5 h-5 text-sky-600" />
                 {isEditMode ? 'Edit Project Details' : 'Create New Project'}
               </h3>
               <button
@@ -401,7 +401,7 @@ export default function ProjectsView() {
                   value={projName}
                   onChange={(e) => setProjName(e.target.value)}
                   placeholder="e.g. Website Redesign"
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-600"
                   required
                 />
               </div>
@@ -413,7 +413,7 @@ export default function ProjectsView() {
                   value={projDesc}
                   onChange={(e) => setProjDesc(e.target.value)}
                   placeholder="Describe project details, objectives, and deliverables..."
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 min-h-[80px]"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-600 min-h-[80px]"
                 />
               </div>
 
@@ -428,7 +428,7 @@ export default function ProjectsView() {
                     dateFormat="yyyy-MM-dd"
                     placeholderText="Select a deadline"
                     required
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-600"
                     calendarClassName="dark-theme-calendar"
                     popperPlacement="bottom-start"
                   />
@@ -440,7 +440,7 @@ export default function ProjectsView() {
                     id="project-status-select"
                     value={projStatus}
                     onChange={(e) => setProjStatus(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-sky-600"
                   >
                     <option value="Active">Active</option>
                     <option value="Completed">Completed</option>
@@ -461,7 +461,7 @@ export default function ProjectsView() {
                         type="button"
                         onClick={() => handleToggleMemberSelection(member._id as string)}
                         className={`flex items-center gap-2 p-1.5 rounded-md text-left text-xs md:text-sm transition-all cursor-pointer ${isSelected
-                          ? 'bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-500/40 text-indigo-600 dark:text-indigo-400'
+                          ? 'bg-sky-50 dark:bg-sky-950/60 border border-sky-600/40 text-sky-700 dark:text-sky-400'
                           : 'hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent text-slate-500 dark:text-slate-400'
                           }`}
                       >
@@ -483,7 +483,7 @@ export default function ProjectsView() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm md:text-base font-semibold shadow-lg shadow-indigo-600/20 cursor-pointer"
+                  className="px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-sm md:text-base font-semibold shadow-lg shadow-sky-700/20 cursor-pointer"
                 >
                   {isEditMode ? 'Update' : 'Create'}
                 </button>

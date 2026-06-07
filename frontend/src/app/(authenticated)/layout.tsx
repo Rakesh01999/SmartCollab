@@ -62,7 +62,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
         return (
             <div className="min-h-screen w-full flex items-center justify-center bg-[var(--background)] text-[var(--foreground)]">
                 <div className="flex flex-col items-center gap-3">
-                    <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
                     <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">Restoring secure session...</span>
                 </div>
             </div>
@@ -78,8 +78,8 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
     return (
         <div className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] relative overflow-hidden transition-colors duration-300">
             {/* Dynamic ambient glowing light */}
-            <div className="absolute top-0 right-0 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] bg-indigo-600/5 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] bg-violet-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] bg-sky-700/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] bg-teal-600/5 rounded-full blur-[120px] pointer-events-none"></div>
 
             {/* Sidebar - fixed on mobile, static on desktop */}
             <Sidebar />

@@ -91,11 +91,9 @@ export default function Sidebar() {
           {/* Brand / Logo section */}
           <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800">
             <div className="flex items-center gap-2 overflow-hidden">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]">
-                S
-              </div>
+              <img src="/logo.png" alt="SmartCollab" className="w-8 h-8 rounded-lg shadow-[0_0_15px_rgba(14, 165, 233,0.5)]" />
               {sidebarOpen && (
-                <span className="font-bold text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-violet-500 dark:from-indigo-400 dark:to-violet-400 whitespace-nowrap">
+                <span className="font-bold text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-teal-500 dark:from-sky-400 dark:to-teal-400 whitespace-nowrap">
                   SmartCollab
                 </span>
               )}
@@ -116,12 +114,12 @@ export default function Sidebar() {
               <img
                 src={user.avatarUrl || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name}`}
                 alt={user.name}
-                className="w-10 h-10 rounded-full border border-indigo-500/30 bg-white dark:bg-slate-800"
+                className="w-10 h-10 rounded-full border border-sky-600/30 bg-white dark:bg-slate-800"
               />
               {sidebarOpen && (
                 <div className="min-w-0">
                   <h3 className="font-semibold text-sm md:text-base truncate text-slate-800 dark:text-slate-100">{user.name}</h3>
-                  <span className="inline-block text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-600 dark:bg-indigo-950 dark:border-indigo-500/30 dark:text-indigo-400 mt-0.5">
+                  <span className="inline-block text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full bg-sky-50 border border-sky-200 text-sky-700 dark:bg-sky-950 dark:border-sky-500/30 dark:text-sky-400 mt-0.5">
                     {user.role}
                   </span>
                 </div>
@@ -138,7 +136,7 @@ export default function Sidebar() {
                   key={item.path}
                   onClick={() => handleNavClick(item.path)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm md:text-base font-medium transition-all cursor-pointer ${isActive
-                    ? 'bg-indigo-600 text-white shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]'
+                    ? 'bg-sky-700 text-white shadow-[0_0_15px_-3px_rgba(14, 165, 233,0.4)]'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/40'
                     } ${!sidebarOpen && 'justify-center'}`}
                 >
@@ -170,7 +168,7 @@ export default function Sidebar() {
               </>
             ) : (
               <>
-                <Moon className="w-5 h-5 text-indigo-400" />
+                <Moon className="w-5 h-5 text-sky-500" />
                 {sidebarOpen && <span>Dark Mode</span>}
               </>
             )}

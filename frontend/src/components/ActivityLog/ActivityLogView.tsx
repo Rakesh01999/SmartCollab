@@ -46,7 +46,7 @@ export default function ActivityLogView() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-            <ActivityIcon className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+            <ActivityIcon className="w-5 h-5 text-sky-600 dark:text-sky-400" />
             System Activity Log
           </h2>
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Audit trail of all tasks, projects, and workload adjustments.</p>
@@ -71,7 +71,7 @@ export default function ActivityLogView() {
             placeholder="Search activities by log description or user..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-700 dark:text-slate-200 focus:outline-none focus:border-indigo-500 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-700 dark:text-slate-200 focus:outline-none focus:border-sky-600 transition-all"
           />
         </div>
 
@@ -80,7 +80,7 @@ export default function ActivityLogView() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="w-full md:w-52 px-3 py-2 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="w-full md:w-52 px-3 py-2 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-sky-600"
           >
             <option value="all">All Activities</option>
             <option value="project_created">Project Created</option>
@@ -99,7 +99,7 @@ export default function ActivityLogView() {
       {/* Timeline List */}
       {loading ? (
         <div className="flex justify-center items-center py-16">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
         <div className="glass-panel border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 relative">
@@ -111,12 +111,12 @@ export default function ActivityLogView() {
             {filteredActivities.map((act, idx) => {
               const iconColors: any = {
                 project_created: 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950 dark:text-blue-400 dark:border-blue-500/20',
-                project_updated: 'bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-500/20',
+                project_updated: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-400 dark:border-sky-500/20',
                 project_deleted: 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-950 dark:text-rose-400 dark:border-rose-500/20',
-                task_created: 'bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-950 dark:text-violet-400 dark:border-violet-500/20',
-                task_updated: 'bg-indigo-50 text-indigo-600 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-500/20',
+                task_created: 'bg-teal-50 text-teal-600 border-teal-200 dark:bg-teal-950 dark:text-teal-400 dark:border-teal-500/20',
+                task_updated: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950 dark:text-sky-400 dark:border-sky-500/20',
                 task_deleted: 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-950 dark:text-rose-400 dark:border-rose-500/20',
-                task_assigned: 'bg-purple-50 text-purple-600 border-purple-200 dark:bg-purple-950 dark:text-purple-400 dark:border-purple-500/20',
+                task_assigned: 'bg-teal-50 text-teal-600 border-teal-200 dark:bg-teal-950 dark:text-teal-400 dark:border-teal-500/20',
                 task_completed: 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-500/20',
                 member_added: 'bg-teal-50 text-teal-600 border-teal-200 dark:bg-teal-950 dark:text-teal-400 dark:border-teal-500/20',
               }[act.type] || 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800';
@@ -138,7 +138,7 @@ export default function ActivityLogView() {
                       {/* Log meta details */}
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[10px] md:text-xs text-slate-400 dark:text-slate-500 font-semibold">
                         <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-indigo-500" />
+                          <Clock className="w-3 h-3 text-sky-600" />
                           {new Date(act.createdAt).toLocaleDateString()} at {new Date(act.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                         <span>•</span>

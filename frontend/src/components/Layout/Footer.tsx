@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import {
-    LayoutDashboard,
     FolderKanban,
     ListTodo,
     Users,
@@ -103,7 +102,7 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex-1 max-w-md">
                         <div className="flex items-center gap-2 mb-2">
-                            <Mail className="w-5 h-5 text-indigo-500" />
+                            <Mail className="w-5 h-5 text-sky-600" />
                             <h3 className="text-lg font-bold text-[var(--foreground)]">Stay in the loop</h3>
                         </div>
                         <p className="text-sm text-[var(--text-muted)]">
@@ -117,11 +116,11 @@ export default function Footer() {
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Enter your email"
                             required
-                            className="flex-1 md:w-64 px-4 py-2.5 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl text-sm text-[var(--foreground)] placeholder-[var(--text-muted)] focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+                            className="flex-1 md:w-64 px-4 py-2.5 bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl text-sm text-[var(--foreground)] placeholder-[var(--text-muted)] focus:outline-none focus:border-sky-600/60 focus:ring-1 focus:ring-sky-600/30 transition-all"
                         />
                         <button
                             type="submit"
-                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-0.5 transition-all cursor-pointer"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-sky-600 to-teal-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-sky-600/25 hover:-translate-y-0.5 transition-all cursor-pointer"
                         >
                             {subscribed ? 'Subscribed!' : 'Subscribe'}
                             {!subscribed && <ArrowRight className="w-4 h-4" />}
@@ -136,11 +135,9 @@ export default function Footer() {
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
                         <div className="flex items-center gap-2.5 mb-4">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-                                <LayoutDashboard className="w-5 h-5 text-white" />
-                            </div>
+                            <img src="/logo.png" alt="SmartCollab" className="w-9 h-9 rounded-xl shadow-lg shadow-sky-600/25" />
                             <span className="text-xl font-bold tracking-tight">
-                                Smart<span className="text-indigo-500">Collab</span>
+                                Smart<span className="text-sky-600">Collab</span>
                             </span>
                         </div>
                         <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-6 max-w-sm">
@@ -152,7 +149,7 @@ export default function Footer() {
                                 <a
                                     key={social.name}
                                     href={social.href}
-                                    className="p-2.5 rounded-xl bg-[var(--hover-bg)] border border-[var(--card-border)] text-[var(--text-muted)] hover:text-indigo-500 hover:border-indigo-500/30 hover:shadow-md hover:shadow-indigo-500/10 transition-all"
+                                    className="p-2.5 rounded-xl bg-[var(--hover-bg)] border border-[var(--card-border)] text-[var(--text-muted)] hover:text-sky-600 hover:border-sky-600/30 hover:shadow-md hover:shadow-sky-600/10 transition-all"
                                     aria-label={social.name}
                                 >
                                     {social.icon}
@@ -172,7 +169,7 @@ export default function Footer() {
                                     {link.route ? (
                                         <button
                                             onClick={() => handleLinkClick(link)}
-                                            className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors cursor-pointer"
+                                            className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-sky-600 transition-colors cursor-pointer"
                                         >
                                             {link.icon}
                                             {link.name}
@@ -180,7 +177,7 @@ export default function Footer() {
                                     ) : (
                                         <a
                                             href={link.href}
-                                            className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                                            className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-sky-600 transition-colors"
                                         >
                                             {link.icon}
                                             {link.name}
@@ -201,7 +198,7 @@ export default function Footer() {
                                 <li key={link.name}>
                                     <a
                                         href={link.href}
-                                        className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                                        className="text-sm text-[var(--text-muted)] hover:text-sky-600 transition-colors"
                                     >
                                         {link.name}
                                     </a>
@@ -220,7 +217,7 @@ export default function Footer() {
                                 <li key={link.name}>
                                     <a
                                         href={link.href}
-                                        className="text-sm text-[var(--text-muted)] hover:text-indigo-500 transition-colors"
+                                        className="text-sm text-[var(--text-muted)] hover:text-sky-600 transition-colors"
                                     >
                                         {link.name}
                                     </a>
@@ -241,9 +238,9 @@ export default function Footer() {
                             by the SmartCollab team.
                         </div>
                         <div className="flex items-center gap-6 text-sm text-[var(--text-muted)]">
-                            <a href="#" className="hover:text-indigo-500 transition-colors">Privacy</a>
-                            <a href="#" className="hover:text-indigo-500 transition-colors">Terms</a>
-                            <a href="#" className="hover:text-indigo-500 transition-colors">Cookies</a>
+                            <a href="#" className="hover:text-sky-600 transition-colors">Privacy</a>
+                            <a href="#" className="hover:text-sky-600 transition-colors">Terms</a>
+                            <a href="#" className="hover:text-sky-600 transition-colors">Cookies</a>
                         </div>
                     </div>
                 </div>

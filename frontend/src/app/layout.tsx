@@ -16,8 +16,11 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Smart Project & Task Collaboration System",
+  title: "SmartCollab — Smart Project & Task Collaboration",
   description: "A premium full-stack dashboard for teams to manage projects, assign tasks, and track team productivity in real time.",
+  icons: {
+    icon: '/logo.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -27,7 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${outfit.variable} ${inter.variable} h-full scroll-smooth`}
       suppressHydrationWarning
     >
-      <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] font-sans selection:bg-indigo-500 selection:text-white antialiased flex flex-col">
+      <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] font-sans selection:bg-sky-600 selection:text-white antialiased flex flex-col">
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -4,7 +4,7 @@ import User from '../models/User';
 import Project from '../models/Project';
 import Task from '../models/Task';
 import Activity from '../models/Activity';
-import { protect } from '../middleware/auth';
+import { protect, authorize } from '../middleware/auth';
 import { AuthRequest } from '../types';
 
 const router = express.Router();
@@ -12,7 +12,7 @@ const router = express.Router();
 const generateToken = (id: string): string => {
   return jwt.sign(
     { id },
-    process.env.JWT_SECRET || 'super_secret_jwt_token_key',
+    process.env.JWT_SECRET as string,
     { expiresIn: '30d' }
   );
 };
@@ -107,8 +107,8 @@ router.get('/me', protect, async (req: AuthRequest, res: Response) => {
 
 // @desc    Seed/Reset database with pre-filled mock data
 // @route   POST /api/auth/seed
-// @access  Public
-router.post('/seed', async (_req: AuthRequest, res: Response) => {
+// @access  Admin
+router.post('/seed', protect, authorize('Admin'), async (_req: AuthRequest, res: Response) => {
   try {
     await User.deleteMany({});
     await Project.deleteMany({});

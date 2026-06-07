@@ -8,7 +8,7 @@
   --foreground: #0f172a;
   --card-bg: #ffffff;
   --card-border: #e2e8f0;
-  --accent-glow: rgba(99, 102, 241, 0.05);
+  --accent-glow: rgba(14, 165, 233, 0.05);
   --input-bg: #ffffff;
   --input-border: #cbd5e1;
   --modal-bg: #ffffff;
@@ -32,7 +32,7 @@
   --foreground: #f8fafc;
   --card-bg: rgba(15, 23, 42, 0.6);
   --card-border: rgba(51, 65, 85, 0.4);
-  --accent-glow: rgba(99, 102, 241, 0.15);
+  --accent-glow: rgba(14, 165, 233, 0.15);
   --input-bg: rgba(15, 23, 42, 0.6);
   --input-border: rgba(51, 65, 85, 0.4);
   --modal-bg: #0f172a;
@@ -44,7 +44,7 @@
   --border-color: rgba(51, 65, 85, 0.4);
   --hover-bg: rgba(30, 41, 59, 0.4);
   --scrollbar-track: rgba(15, 23, 42, 0.3);
-  --scrollbar-thumb: rgba(99, 102, 241, 0.3);
+  --scrollbar-thumb: rgba(14, 165, 233, 0.3);
   --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -75,7 +75,7 @@ body {
 .glass-card-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 20px -8px var(--shadow-color), 0 0 20px 2px var(--accent-glow);
-  border-color: rgba(99, 102, 241, 0.4);
+  border-color: rgba(14, 165, 233, 0.4);
 }
 
 /* Custom Scrollbar */
@@ -94,7 +94,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.6);
+  background: rgba(14, 165, 233, 0.6);
 }
 
 /* Status Badges styling helper — Light theme uses stronger contrast colors */
@@ -303,11 +303,11 @@ body {
 
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4);
   }
 
   50% {
-    box-shadow: 0 0 20px 8px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 20px 8px rgba(14, 165, 233, 0.15);
   }
 }
 
@@ -384,7 +384,7 @@ body {
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.08) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(14, 165, 233, 0.08) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 3s ease-in-out infinite;
 }
@@ -578,11 +578,11 @@ body {
 
   0%,
   100% {
-    box-shadow: 0 0 5px 0 rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 5px 0 rgba(14, 165, 233, 0.3);
   }
 
   50% {
-    box-shadow: 0 0 20px 8px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 20px 8px rgba(14, 165, 233, 0.15);
   }
 }
 
@@ -652,6 +652,111 @@ body {
   animation: dashDraw 2s ease forwards;
 }
 
+/* Stagger entrance animation — cards/items fade+slide in sequentially */
+@keyframes staggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-stagger-in {
+  animation: staggerIn 0.5s ease forwards;
+  opacity: 0;
+}
+
+/* Subtle floating animation for decorative SVG elements */
+@keyframes floatSubtle {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float-subtle {
+  animation: floatSubtle 4s ease-in-out infinite;
+}
+
+/* Slow wave movement for background decoration patterns */
+@keyframes waveMoveSlow {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-wave-slow {
+  animation: waveMoveSlow 20s linear infinite;
+}
+
+/* Slide in from left — for timeline items */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInFromLeft 0.4s ease forwards;
+  opacity: 0;
+}
+
+/* Pulse bar — subtle opacity pulse for progress bars on load */
+@keyframes pulseBar {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-bar {
+  animation: pulseBar 2s ease-in-out infinite;
+}
+
+/* Gradient shimmer for header decoration bands */
+@keyframes gradientShimmerSlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-shimmer-slow {
+  background-size: 200% 200%;
+  animation: gradientShimmerSlow 6s ease infinite;
+}
+
 /* React DatePicker — Light theme is default */
 .react-datepicker-wrapper {
   display: block;
@@ -710,14 +815,14 @@ body {
 }
 
 .react-datepicker__day:hover {
-  background-color: rgba(99, 102, 241, 0.1) !important;
-  color: #4f46e5 !important;
+  background-color: rgba(14, 165, 233, 0.1) !important;
+  color: #0369a1 !important;
   border-radius: 8px !important;
 }
 
 .react-datepicker__day--selected,
 .react-datepicker__day--keyboard-selected {
-  background-color: #6366f1 !important;
+  background-color: #0ea5e9 !important;
   color: #ffffff !important;
   border-radius: 8px !important;
   font-weight: 700 !important;
@@ -725,12 +830,12 @@ body {
 
 .react-datepicker__day--selected:hover,
 .react-datepicker__day--keyboard-selected:hover {
-  background-color: #4f46e5 !important;
+  background-color: #0369a1 !important;
   color: #ffffff !important;
 }
 
 .react-datepicker__day--today {
-  border: 1px solid #6366f1 !important;
+  border: 1px solid #0ea5e9 !important;
   border-radius: 8px !important;
   font-weight: 600 !important;
 }
@@ -763,7 +868,7 @@ body {
 }
 
 .react-datepicker__navigation:hover *::before {
-  border-color: #6366f1 !important;
+  border-color: #0ea5e9 !important;
 }
 
 .react-datepicker__month-container {
@@ -794,12 +899,12 @@ body {
 
 .react-datepicker__year-option:hover,
 .react-datepicker__month-option:hover {
-  background-color: rgba(99, 102, 241, 0.1) !important;
+  background-color: rgba(14, 165, 233, 0.1) !important;
 }
 
 .react-datepicker__year-option--selected,
 .react-datepicker__month-option--selected {
-  background-color: #6366f1 !important;
+  background-color: #0ea5e9 !important;
   color: #ffffff !important;
   font-weight: 700 !important;
 }
@@ -808,7 +913,7 @@ body {
 .dark .react-datepicker {
   background-color: #0f172a !important;
   border: 1px solid rgba(51, 65, 85, 0.6) !important;
-  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5), 0 0 20px 2px rgba(99, 102, 241, 0.1) !important;
+  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5), 0 0 20px 2px rgba(14, 165, 233, 0.1) !important;
 }
 
 .dark .react-datepicker__header {
@@ -829,18 +934,18 @@ body {
 }
 
 .dark .react-datepicker__day:hover {
-  background-color: rgba(99, 102, 241, 0.2) !important;
-  color: #c7d2fe !important;
+  background-color: rgba(14, 165, 233, 0.2) !important;
+  color: #bae6fd !important;
 }
 
 .dark .react-datepicker__day--selected,
 .dark .react-datepicker__day--keyboard-selected {
-  background-color: #6366f1 !important;
+  background-color: #0ea5e9 !important;
   color: #ffffff !important;
 }
 
 .dark .react-datepicker__day--today {
-  border: 1px solid #6366f1 !important;
+  border: 1px solid #0ea5e9 !important;
 }
 
 .dark .react-datepicker__day--disabled {
@@ -877,5 +982,5 @@ body {
 
 .dark .react-datepicker__year-option:hover,
 .dark .react-datepicker__month-option:hover {
-  background-color: rgba(99, 102, 241, 0.2) !important;
+  background-color: rgba(14, 165, 233, 0.2) !important;
 }

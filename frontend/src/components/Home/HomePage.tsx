@@ -240,9 +240,7 @@ export default function HomePage() {
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
                         <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-600 to-teal-600 flex items-center justify-center shadow-lg shadow-sky-600/25">
-                                <LayoutDashboard className="w-5 h-5 text-white" />
-                            </div>
+                            <img src="/logo.png" alt="SmartCollab" className="w-9 h-9 rounded-xl shadow-lg shadow-sky-600/25" />
                             <span className="text-xl font-bold tracking-tight">
                                 Smart<span className="text-sky-600">Collab</span>
                             </span>
