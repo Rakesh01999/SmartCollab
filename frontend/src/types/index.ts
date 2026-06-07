@@ -77,3 +77,16 @@ export interface Activity {
   task?: Task | null;
   createdAt: string;
 }
+
+export type NotificationType = ActivityType | 'mention' | 'deadline_approaching' | 'status_change';
+
+export interface Notification {
+  _id: string;
+  text: string;
+  type: NotificationType;
+  user?: User;
+  project?: Project | null;
+  task?: Task | null;
+  createdAt: string;
+  read: boolean;
+}

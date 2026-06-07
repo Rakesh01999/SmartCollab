@@ -3,7 +3,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setSearchQuery, showToast, toggleSidebar } from '../../store/appSlice';
 import { logout } from '../../store/authSlice';
-import { Menu, Search, Bell, LogOut, User, ChevronDown, Home, ArrowRight } from 'lucide-react';
+import { Menu, Search, LogOut, ChevronDown, Home, ArrowRight } from 'lucide-react';
+import NotificationDropdown from './NotificationDropdown';
 import { useState, ChangeEvent, useRef, useEffect, KeyboardEvent } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { RootState, AppDispatch } from '../../store/store';
@@ -97,10 +98,7 @@ export default function Navbar({ title }: NavbarProps) {
 
       {/* Right section: Notifications & Profile */}
       <div className="flex items-center gap-2">
-        <div className="relative p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-sky-600 rounded-full"></span>
-        </div>
+        <NotificationDropdown />
 
         {/* Conditional User Profile Dropdown */}
         {isAuthenticated && user && (

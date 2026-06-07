@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Notification } from '../types';
 
 export interface ConfirmDialogState {
   open: boolean;
@@ -20,6 +21,7 @@ export interface AppState {
   } | null;
   refreshCounter: number;
   confirmDialog: ConfirmDialogState;
+  notifications: Notification[];
 }
 
 const initialConfirmDialog: ConfirmDialogState = {
@@ -38,6 +40,7 @@ const initialState: AppState = {
   toast: null,
   refreshCounter: 0,
   confirmDialog: initialConfirmDialog,
+  notifications: [],
 };
 
 const appSlice = createSlice({
@@ -75,6 +78,23 @@ const appSlice = createSlice({
     hideConfirmDialog(state) {
       state.confirmDialog = { ...initialConfirmDialog };
     },
+    setNotifications(state, action: PayloadAction<Notification[]>) {
+      state.notifications = action.payload;
+    },
+    markNotificationRead(state, action: PayloadAction<string>) {
+      const notification = state.notifications.find(n => n._id === action.payload);
+      if (notification) {
+        notification.read = true;
+      }
+    },
+    markAllNotificationsRead(state) {
+      state.notifications.forEach(n => {
+        n.read = true;
+      });
+    },
+    clearNotifications(state) {
+      state.notifications = [];
+    },
   },
 });
 
@@ -87,7 +107,11 @@ export const {
   hideToast,
   triggerRefresh,
   showConfirmDialog,
-  hideConfirmDialog
+  hideConfirmDialog,
+  setNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  clearNotifications,
 } = appSlice.actions;
 
 export default appSlice.reducer;
