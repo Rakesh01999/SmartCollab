@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFailure } from '../../store/authSlice';
 import { showToast } from '../../store/appSlice';
 import { authAPI } from '../../lib/api';
-import { Shield, Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Shield, Mail, Lock, User, ArrowRight, Eye, EyeOff, Home } from 'lucide-react';
 import { RootState, AppDispatch } from '../../store/store';
 
 export default function AuthPage() {
@@ -239,6 +239,16 @@ export default function AuthPage() {
                 className="text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
               >
                 {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Sign In'}
+              </button>
+            </div>
+
+            <div className="mt-4 flex justify-center">
+              <button
+                onClick={() => router.push('/')}
+                className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
+              >
+                <Home className="w-3.5 h-3.5" />
+                Go to Home
               </button>
             </div>
           </div>

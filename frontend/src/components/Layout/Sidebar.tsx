@@ -93,7 +93,7 @@ export default function Sidebar() {
             <div className="flex items-center gap-2 overflow-hidden">
               <img src="/logo.png" alt="SmartCollab" className="w-8 h-8 rounded-lg shadow-[0_0_15px_rgba(14, 165, 233,0.5)]" />
               {sidebarOpen && (
-                <span className="font-bold text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-teal-500 dark:from-sky-400 dark:to-teal-400 whitespace-nowrap">
+                <span className="font-bold text-lg md:text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-600 via-teal-500 to-teal-500 dark:from-sky-400 dark:via-teal-400 dark:to-teal-400 whitespace-nowrap">
                   SmartCollab
                 </span>
               )}

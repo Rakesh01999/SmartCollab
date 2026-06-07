@@ -136,8 +136,8 @@ export default function Footer() {
                     <div className="lg:col-span-2">
                         <div className="flex items-center gap-2.5 mb-4">
                             <img src="/logo.png" alt="SmartCollab" className="w-9 h-9 rounded-xl shadow-lg shadow-sky-600/25" />
-                            <span className="text-xl font-bold tracking-tight">
-                                Smart<span className="text-sky-600">Collab</span>
+                            <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-600 via-teal-500 to-teal-500 dark:from-sky-400 dark:via-teal-400 dark:to-teal-400">
+                                SmartCollab
                             </span>
                         </div>
                         <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-6 max-w-sm">
