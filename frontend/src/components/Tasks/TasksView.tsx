@@ -569,135 +569,141 @@ export default function TasksView() {
       )}
 
       {/* Kanban Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {Object.entries(columns).map(([colName, colTasks]) => {
-          const titleColors: any = {
-            Todo: 'text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800',
-            'In Progress': 'text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-950/40 border-blue-100 dark:border-blue-500/20',
-            Completed: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/40 border-emerald-100 dark:border-emerald-500/20',
-          }[colName];
+      {loading ? (
+        <div className="flex justify-center items-center py-16">
+          <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {Object.entries(columns).map(([colName, colTasks]) => {
+            const titleColors: any = {
+              Todo: 'text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800',
+              'In Progress': 'text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-950/40 border-blue-100 dark:border-blue-500/20',
+              Completed: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/40 border-emerald-100 dark:border-emerald-500/20',
+            }[colName];
 
-          return (
-            <div key={colName} className="flex flex-col min-h-[450px]">
-              {/* Column Header */}
-              <div className={`p-3 rounded-xl border flex items-center justify-between font-bold text-sm md:text-base lg:text-lg mb-4 ${titleColors}`}>
-                <span>{colName}</span>
-                <span className="bg-slate-200/60 dark:bg-slate-950/50 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md text-xs md:text-sm">{colTasks.length}</span>
-              </div>
+            return (
+              <div key={colName} className="flex flex-col min-h-[450px]">
+                {/* Column Header */}
+                <div className={`p-3 rounded-xl border flex items-center justify-between font-bold text-sm md:text-base lg:text-lg mb-4 ${titleColors}`}>
+                  <span>{colName}</span>
+                  <span className="bg-slate-200/60 dark:bg-slate-950/50 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md text-xs md:text-sm">{colTasks.length}</span>
+                </div>
 
-              {/* Task Cards Container */}
-              <div className="flex-1 space-y-4 bg-slate-100/40 dark:bg-slate-950/20 p-2 rounded-2xl border border-slate-200 dark:border-slate-900 border-dashed min-h-[400px]">
-                {colTasks.map((task) => {
-                  const daysLeft = Math.ceil((new Date(task.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-                  const isOverdue = daysLeft < 0 && task.status !== 'Completed';
+                {/* Task Cards Container */}
+                <div className="flex-1 space-y-4 bg-slate-100/40 dark:bg-slate-950/20 p-2 rounded-2xl border border-slate-200 dark:border-slate-900 border-dashed min-h-[400px]">
+                  {colTasks.map((task) => {
+                    const daysLeft = Math.ceil((new Date(task.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+                    const isOverdue = daysLeft < 0 && task.status !== 'Completed';
 
-                  const priorityStyles: any = {
-                    High: 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-500/10',
-                    Medium: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-500/10',
-                    Low: 'bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800',
-                  }[task.priority];
+                    const priorityStyles: any = {
+                      High: 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-500/10',
+                      Medium: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-500/10',
+                      Low: 'bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800',
+                    }[task.priority];
 
-                  const isChecked = selectedTaskIds.includes(task._id as string);
+                    const isChecked = selectedTaskIds.includes(task._id as string);
 
-                  return (
-                    <div
-                      key={task._id}
-                      className={`glass-panel border rounded-xl p-4 flex flex-col justify-between cursor-pointer transition-all hover:translate-x-1 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 ${isChecked ? 'border-sky-600/60 bg-sky-50/10 dark:bg-sky-950/10 shadow-[0_0_15px_rgba(14, 165, 233,0.08)]' : ''
-                        }`}
-                      onClick={() => handleOpenTaskDetail(task)}
-                    >
-                      {/* Top section: Checkbox, Project and Priority */}
-                      <div className="flex justify-between items-start gap-2 mb-2" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => toggleSelectTask(task._id as string)}
-                            className="w-4 h-4 accent-sky-700 rounded bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-800 cursor-pointer"
-                          />
-                          <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide truncate max-w-[120px]">
-                            {(task.project as Project)?.name || 'No Project'}
-                          </span>
-                        </div>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold border ${priorityStyles}`}>
-                          {task.priority}
-                        </span>
-                      </div>
-
-                      {/* Task title and description */}
-                      <h4 className="font-bold text-sm md:text-base text-slate-800 dark:text-slate-200 line-clamp-1">{task.title}</h4>
-                      <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 min-h-[32px]">
-                        {task.description || 'No description provided.'}
-                      </p>
-
-                      {/* Quick Move Buttons & Assignee */}
-                      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-900 flex justify-between items-center" onClick={e => e.stopPropagation()}>
-                        {/* Due Date Indicator */}
-                        <div className={`flex items-center gap-1 text-[10px] md:text-xs font-medium ${isOverdue ? 'text-rose-600 dark:text-rose-400 font-bold animate-pulse' : 'text-slate-500 dark:text-slate-400'
-                          }`}>
-                          <Calendar className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
-                          <span>
-                            {isOverdue
-                              ? `Overdue by ${Math.abs(daysLeft)}d`
-                              : daysLeft === 0
-                                ? 'Due Today'
-                                : daysLeft === 1
-                                  ? 'Due Tomorrow'
-                                  : `Due in ${daysLeft}d`}
-                          </span>
-                        </div>
-
-                        {/* Status Shift Buttons */}
-                        <div className="flex items-center gap-2">
-                          {colName !== 'Todo' && (
-                            <button
-                              onClick={() => handleQuickStatusChange(task, colName === 'Completed' ? 'In Progress' : 'Todo')}
-                              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-400 hover:text-sky-700 dark:hover:text-sky-400 cursor-pointer transition-colors"
-                              title="Move Left"
-                            >
-                              <ChevronLeft className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-
-                          {/* Assignee Avatar */}
-                          {task.assignedMember ? (
-                            <img
-                              src={(task.assignedMember as User).avatarUrl}
-                              alt={(task.assignedMember as User).name}
-                              className="w-5.5 h-5.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-900"
-                              title={`Assigned to ${(task.assignedMember as User).name}`}
+                    return (
+                      <div
+                        key={task._id}
+                        className={`glass-panel border rounded-xl p-4 flex flex-col justify-between cursor-pointer transition-all hover:translate-x-1 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 ${isChecked ? 'border-sky-600/60 bg-sky-50/10 dark:bg-sky-950/10 shadow-[0_0_15px_rgba(14, 165, 233,0.08)]' : ''
+                          }`}
+                        onClick={() => handleOpenTaskDetail(task)}
+                      >
+                        {/* Top section: Checkbox, Project and Priority */}
+                        <div className="flex justify-between items-start gap-2 mb-2" onClick={e => e.stopPropagation()}>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => toggleSelectTask(task._id as string)}
+                              className="w-4 h-4 accent-sky-700 rounded bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-800 cursor-pointer"
                             />
-                          ) : (
-                            <span
-                              className="w-5.5 h-5.5 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-850 flex items-center justify-center text-[8px] md:text-[10px] text-slate-500"
-                              title="Unassigned Task"
-                            >
-                              U
+                            <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide truncate max-w-[120px]">
+                              {(task.project as Project)?.name || 'No Project'}
                             </span>
-                          )}
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold border ${priorityStyles}`}>
+                            {task.priority}
+                          </span>
+                        </div>
 
-                          {colName !== 'Completed' && (
-                            <button
-                              onClick={() => handleQuickStatusChange(task, colName === 'Todo' ? 'In Progress' : 'Completed')}
-                              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-400 hover:text-sky-700 dark:hover:text-sky-400 cursor-pointer transition-colors"
-                              title="Move Right"
-                            >
-                              <ChevronRight className="w-3.5 h-3.5" />
-                            </button>
-                          )}
+                        {/* Task title and description */}
+                        <h4 className="font-bold text-sm md:text-base text-slate-800 dark:text-slate-200 line-clamp-1">{task.title}</h4>
+                        <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 min-h-[32px]">
+                          {task.description || 'No description provided.'}
+                        </p>
+
+                        {/* Quick Move Buttons & Assignee */}
+                        <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-900 flex justify-between items-center" onClick={e => e.stopPropagation()}>
+                          {/* Due Date Indicator */}
+                          <div className={`flex items-center gap-1 text-[10px] md:text-xs font-medium ${isOverdue ? 'text-rose-600 dark:text-rose-400 font-bold animate-pulse' : 'text-slate-500 dark:text-slate-400'
+                            }`}>
+                            <Calendar className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                            <span>
+                              {isOverdue
+                                ? `Overdue by ${Math.abs(daysLeft)}d`
+                                : daysLeft === 0
+                                  ? 'Due Today'
+                                  : daysLeft === 1
+                                    ? 'Due Tomorrow'
+                                    : `Due in ${daysLeft}d`}
+                            </span>
+                          </div>
+
+                          {/* Status Shift Buttons */}
+                          <div className="flex items-center gap-2">
+                            {colName !== 'Todo' && (
+                              <button
+                                onClick={() => handleQuickStatusChange(task, colName === 'Completed' ? 'In Progress' : 'Todo')}
+                                className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-400 hover:text-sky-700 dark:hover:text-sky-400 cursor-pointer transition-colors"
+                                title="Move Left"
+                              >
+                                <ChevronLeft className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+
+                            {/* Assignee Avatar */}
+                            {task.assignedMember ? (
+                              <img
+                                src={(task.assignedMember as User).avatarUrl}
+                                alt={(task.assignedMember as User).name}
+                                className="w-5.5 h-5.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-900"
+                                title={`Assigned to ${(task.assignedMember as User).name}`}
+                              />
+                            ) : (
+                              <span
+                                className="w-5.5 h-5.5 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-850 flex items-center justify-center text-[8px] md:text-[10px] text-slate-500"
+                                title="Unassigned Task"
+                              >
+                                U
+                              </span>
+                            )}
+
+                            {colName !== 'Completed' && (
+                              <button
+                                onClick={() => handleQuickStatusChange(task, colName === 'Todo' ? 'In Progress' : 'Completed')}
+                                className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-400 hover:text-sky-700 dark:hover:text-sky-400 cursor-pointer transition-colors"
+                                title="Move Right"
+                              >
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-                {colTasks.length === 0 && (
-                  <div className="py-8 text-center text-slate-400 dark:text-slate-600 text-xs md:text-sm italic">No tasks in this stage.</div>
-                )}
+                    );
+                  })}
+                  {colTasks.length === 0 && (
+                    <div className="py-8 text-center text-slate-400 dark:text-slate-600 text-xs md:text-sm italic">No tasks in this stage.</div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Task Creation / Editing Form Modal */}
       {showTaskFormModal && (
