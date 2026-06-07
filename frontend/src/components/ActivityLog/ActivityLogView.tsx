@@ -41,7 +41,7 @@ export default function ActivityLogView() {
   });
 
   return (
-    <div className="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full animate-fade-in-up">
+    <div className="flex-1 p-4 lg:p-6 space-y-4 lg:space-y-6 max-w-7xl mx-auto w-full animate-fade-in-up">
       {/* Title & Operations */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>

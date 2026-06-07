@@ -178,7 +178,7 @@ export default function ProjectsView() {
   });
 
   return (
-    <div className="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full animate-fade-in-up">
+    <div className="flex-1 p-4 lg:p-6 space-y-4 lg:space-y-6 max-w-7xl mx-auto w-full animate-fade-in-up">
       {/* Title & Operations */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -201,7 +201,7 @@ export default function ProjectsView() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col md:flex-row gap-4 items-center bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
+      <div className="flex flex-col md:flex-row gap-3 lg:gap-4 items-center bg-white/60 dark:bg-slate-900/40 p-3 lg:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
         <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500 dark:text-slate-400" />
           <input
@@ -233,7 +233,7 @@ export default function ProjectsView() {
           <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
           {filteredProjects.map((proj) => {
             // Compute project specific tasks and progress
             const projTasks = tasks.filter(t => (t.project as Project)?._id === proj._id || t.project === proj._id);

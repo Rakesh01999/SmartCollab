@@ -122,7 +122,7 @@ export default function DashboardView() {
   ];
 
   return (
-    <div className="flex-1 p-6 space-y-8 max-w-7xl mx-auto w-full animate-fade-in-up">
+    <div className="flex-1 p-4 lg:p-6 space-y-4 lg:space-y-8 max-w-7xl mx-auto w-full animate-fade-in-up">
       {/* Title greeting */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl">
         <div>
@@ -144,7 +144,7 @@ export default function DashboardView() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {kpis.map((kpi, idx) => (
           <div
             key={idx}
@@ -162,7 +162,7 @@ export default function DashboardView() {
       </div>
 
       {/* Charts & Analytics Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
 
         {/* Tasks by Priority (Bar chart) */}
         <div className="lg:col-span-4 glass-panel border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl flex flex-col justify-between">
@@ -330,7 +330,7 @@ export default function DashboardView() {
       </div>
 
       {/* Team Workload & Upcoming Deadlines / Recent Activity Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
 
         {/* Member Workload Summary */}
         <div className="lg:col-span-6 glass-panel border border-slate-200/80 dark:border-slate-800/80 p-6 rounded-2xl">

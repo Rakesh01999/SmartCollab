@@ -19,7 +19,8 @@ import {
   PlusCircle,
   Trash2,
   CheckSquare,
-  FileText
+  FileText,
+  RotateCcw
 } from 'lucide-react';
 import { RootState, AppDispatch } from '../../store/store';
 import { Task, Project, User } from '../../types';
@@ -40,6 +41,16 @@ export default function TasksView() {
   const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
   const [deadlineFilter, setDeadlineFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('latestCreated');
+
+  const hasActiveFilters = search !== '' || priorityFilter !== 'all' || assigneeFilter !== 'all' || deadlineFilter !== 'all' || sortBy !== 'latestCreated';
+
+  const handleResetFilters = () => {
+    setSearch('');
+    setPriorityFilter('all');
+    setAssigneeFilter('all');
+    setDeadlineFilter('all');
+    setSortBy('latestCreated');
+  };
 
   // Bulk Actions
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
@@ -398,7 +409,7 @@ export default function TasksView() {
   };
 
   return (
-    <div className="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full animate-fade-in-up">
+    <div className="flex-1 p-4 lg:p-6 space-y-4 lg:space-y-6 max-w-7xl mx-auto w-full animate-fade-in-up">
       {/* Title & Operations */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -446,10 +457,10 @@ export default function TasksView() {
       </div>
 
       {/* Kanban Filters & Sort Toolbar */}
-      <div className="bg-white/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+      <div className="bg-white/60 dark:bg-slate-900/40 p-3 lg:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80 flex flex-wrap gap-3 items-center">
 
         {/* Search */}
-        <div className="relative md:col-span-3 w-full">
+        <div className="relative w-full md:w-auto md:flex-[2] md:min-w-[180px]">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
@@ -461,7 +472,7 @@ export default function TasksView() {
         </div>
 
         {/* Priority Filter */}
-        <div className="md:col-span-2 w-full">
+        <div className="w-full md:w-auto md:flex-1 md:min-w-[130px]">
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
@@ -475,7 +486,7 @@ export default function TasksView() {
         </div>
 
         {/* Assignee Filter */}
-        <div className="md:col-span-2 w-full">
+        <div className="w-full md:w-auto md:flex-1 md:min-w-[130px]">
           <select
             value={assigneeFilter}
             onChange={(e) => setAssigneeFilter(e.target.value)}
@@ -490,7 +501,7 @@ export default function TasksView() {
         </div>
 
         {/* Deadline filter */}
-        <div className="md:col-span-2 w-full">
+        <div className="w-full md:w-auto md:flex-1 md:min-w-[130px]">
           <select
             value={deadlineFilter}
             onChange={(e) => setDeadlineFilter(e.target.value)}
@@ -503,7 +514,7 @@ export default function TasksView() {
         </div>
 
         {/* Sorting option */}
-        <div className="md:col-span-3 w-full">
+        <div className="w-full md:w-auto md:flex-1 md:min-w-[130px]">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -514,6 +525,21 @@ export default function TasksView() {
             <option value="highestPriority">Sort: Highest Priority</option>
             <option value="recentlyUpdated">Sort: Recently Updated</option>
           </select>
+        </div>
+
+        {/* Reset Filters */}
+        <div className="w-full md:w-auto flex items-center justify-center md:justify-start">
+          <button
+            onClick={handleResetFilters}
+            disabled={!hasActiveFilters}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all whitespace-nowrap ${hasActiveFilters
+              ? 'bg-sky-600 hover:bg-sky-700 text-white shadow-md hover:shadow-lg'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+              }`}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            Reset
+          </button>
         </div>
 
       </div>
@@ -574,7 +600,7 @@ export default function TasksView() {
           <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
           {Object.entries(columns).map(([colName, colTasks]) => {
             const titleColors: any = {
               Todo: 'text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800',
