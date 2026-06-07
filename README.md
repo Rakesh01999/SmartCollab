@@ -80,8 +80,53 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## Demo Credentials
+## Deployment Instructions
 
+### Deploying to a Live Server (e.g., Vercel + Render / Railway)
+
+#### Backend Deployment (Render / Railway / Any Node.js Host)
+
+1. **Push to GitHub**: Ensure your backend code is pushed to a GitHub repository.
+2. **Create a new Web Service** on Render (or Railway):
+   - Connect your GitHub repo and select the `backend/` folder as the root directory.
+   - Set the build command: `npm install`
+ and start command: `npm start`.
+   - Add environment variables:
+     - `PORT=5000`
+     - `MONGODB_URI=<your-mongodb-atlas-connection-string>`
+ (use MongoDB Atlas for cloud DB)
+     - `JWT_SECRET=<a-secure-random-secret>`
+ (generate a strong secret, e.g. `openssl rand -base64 32`)
+3. **Configure MongoDB Atlas**:
+   - Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/atlas).
+   - Whitelist the deployment server's IP address (or allow all IPs `0.0.0.0/0` for Render/Railway).
+   - Copy the connection string and set it as `MONGODB_URI` env var.
+4. **Note**: The backend auto-seeds demo data when the database is empty, so no manual seeding is needed on first deploy.
+
+#### Frontend Deployment (Vercel / Netlify / Any Static Host)
+
+1. **Push to GitHub**: Ensure your frontend code is pushed to a GitHub repository.
+2. **Create a new project** on Vercel (or Netlify):
+   - Connect your GitHub repo and select the `frontend/` folder as the root directory.
+   - Set the framework preset to **Next.js**.
+   - Add environment variable:
+     - `NEXT_PUBLIC_API_URL=https://<your-backend-app>.onrender.com/api` (replace with your actual backend URL)
+3. **Build settings** (Vercel auto-detects Next.js):
+   - Build command: `npm run build`
+   - Output directory: `.next`
+4. **Deploy**: Vercel will auto-deploy on every push to the connected branch.
+
+#### Post-Deployment Checklist
+
+- ✅ Backend API is accessible at the deployed URL (test `/api/auth/me` with a valid token).
+- ✅ Frontend loads and can communicate with the backend (`NEXT_PUBLIC_API_URL` is correct).
+- ✅ Demo login buttons work (Admin, PM, Team Member).
+- ✅ MongoDB Atlas connection is stable (check backend logs for connection errors).
+- ✅ File uploads work (ensure the `uploads/` directory persists or use cloud storage for production).
+
+---
+
+## Demo Credentials
 You can instantly log in to any of the role profiles using the **Demo Login buttons** on the authentication page, or input the credentials manually:
 
 | Role | Email | Password |

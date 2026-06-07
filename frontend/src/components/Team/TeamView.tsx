@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { teamAPI } from '../../lib/api';
 import { showToast } from '../../store/appSlice';
 import { usePermissions } from '../../hooks/usePermissions';
-import { Users, UserPlus, Mail, X, UserCheck, Eye, EyeOff } from 'lucide-react';
+import { Users, UserPlus, Mail, X, UserCheck, Eye, EyeOff, Search } from 'lucide-react';
 import { AppDispatch } from '../../store/store';
 import { User } from '../../types';
 
@@ -16,6 +16,7 @@ export default function TeamView() {
   const [loading, setLoading] = useState<boolean>(true);
   const [workloads, setWorkloads] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [teamSearch, setTeamSearch] = useState<string>('');
 
   // Form States (New Team Member)
   const [name, setName] = useState<string>('');
@@ -64,6 +65,13 @@ export default function TeamView() {
     }
   };
 
+  // Filter workloads by search term (member name)
+  const filteredWorkloads = useMemo(() => {
+    if (!teamSearch.trim()) return workloads;
+    const term = teamSearch.toLowerCase();
+    return workloads.filter(item => item.member.name.toLowerCase().includes(term));
+  }, [workloads, teamSearch]);
+
   return (
     <div className="flex-1 p-4 lg:p-6 space-y-4 lg:space-y-6 max-w-7xl mx-auto w-full animate-fade-in-up">
       {/* Title & Operations */}
@@ -76,15 +84,37 @@ export default function TeamView() {
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Manage access controls, roles, and review member workloads.</p>
         </div>
 
-        {permissions.canAddTeamMember && (
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-sm md:text-base font-semibold transition-all shadow-lg shadow-sky-700/20 cursor-pointer"
-          >
-            <UserPlus className="w-4 h-4" />
-            Add Member
-          </button>
-        )}
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          {/* Search by Name */}
+          <div className="relative flex-1 sm:flex-initial">
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
+            <input
+              type="text"
+              value={teamSearch}
+              onChange={(e) => setTeamSearch(e.target.value)}
+              placeholder="Search by name..."
+              className="w-full sm:w-[200px] pl-10 pr-4 py-2 bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:border-sky-600 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+            />
+            {teamSearch && (
+              <button
+                onClick={() => setTeamSearch('')}
+                className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          {permissions.canAddTeamMember && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-sm md:text-base font-semibold transition-all shadow-lg shadow-sky-700/20 cursor-pointer"
+            >
+              <UserPlus className="w-4 h-4" />
+              Add Member
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Grid of Team Cards */}
@@ -92,9 +122,20 @@ export default function TeamView() {
         <div className="flex justify-center items-center py-16">
           <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
+      ) : filteredWorkloads.length === 0 ? (
+        <div className="text-center py-16 text-slate-400 dark:text-slate-500">
+          <Users className="w-10 h-10 mx-auto mb-3 opacity-40" />
+          <p className="text-sm md:text-base font-medium">No team members found matching "{teamSearch}"</p>
+          <button
+            onClick={() => setTeamSearch('')}
+            className="mt-2 text-xs md:text-sm text-sky-600 dark:text-sky-400 hover:underline cursor-pointer"
+          >
+            Clear search
+          </button>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-          {workloads.map((item, idx) => {
+          {filteredWorkloads.map((item, idx) => {
             const { member, totalTasks, completedTasks, pendingTasks } = item;
 
             const roleStyles: any = {

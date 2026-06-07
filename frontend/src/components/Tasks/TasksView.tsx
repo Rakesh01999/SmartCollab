@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, FormEvent, ChangeEvent } from 'react';
+import { useEffect, useState, FormEvent, ChangeEvent, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -44,6 +44,13 @@ export default function TasksView() {
   const [deadlineFilter, setDeadlineFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('latestCreated');
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalTasks, setTotalTasks] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(12);
+  const isInitialMount = useRef<boolean>(true);
+
   const hasActiveFilters = search !== '' || priorityFilter !== 'all' || assigneeFilter !== 'all' || deadlineFilter !== 'all' || sortBy !== 'latestCreated';
 
   const handleResetFilters = () => {
@@ -52,6 +59,7 @@ export default function TasksView() {
     setAssigneeFilter('all');
     setDeadlineFilter('all');
     setSortBy('latestCreated');
+    setCurrentPage(1);
   };
 
   // Bulk Actions
@@ -101,7 +109,7 @@ export default function TasksView() {
     }
   };
 
-  const refreshTasks = async () => {
+  const refreshTasks = async (page?: number, limit?: number) => {
     try {
       const filters: any = {};
       if (activeProjectId !== 'all') {
@@ -120,17 +128,43 @@ export default function TasksView() {
         filters.search = search;
       }
       filters.sortBy = sortBy;
-      filters.limit = 200; // Load plenty
+      filters.page = (page ?? currentPage).toString();
+      filters.limit = (limit ?? pageSize).toString();
 
       const taskRes = await tasksAPI.getAll(filters);
       setTasks(taskRes.data.data || []);
+      setTotalTasks(taskRes.data.total || 0);
+      setTotalPages(taskRes.data.pages || 1);
     } catch (error: any) {
       dispatch(showToast({ message: error.message || 'Failed to refresh tasks list', type: 'error' }));
     }
   };
 
+  const goToPage = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    refreshTasks(page);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+    refreshTasks(1, size);
+  };
+
+  // Initial load: fetch projects, team, and tasks
   useEffect(() => {
     loadAllData();
+  }, []);
+
+  // Filter changes: reset page and refresh tasks (skip initial mount)
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    setCurrentPage(1);
+    refreshTasks(1);
   }, [activeProjectId, priorityFilter, assigneeFilter, deadlineFilter, sortBy, search]);
 
   const handleOpenCreateTask = () => {
@@ -722,6 +756,89 @@ export default function TasksView() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {!loading && totalTasks > 0 && (
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/60 dark:bg-slate-900/40 p-3 lg:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
+          {/* Results summary */}
+          <span className="text-xs md:text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Showing {((currentPage - 1) * pageSize) + 1}–{Math.min(currentPage * pageSize, totalTasks)} of {totalTasks} tasks
+          </span>
+
+          {/* Page size selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs md:text-sm text-slate-500 dark:text-slate-400 font-medium">Per page:</span>
+            {[6, 12, 24, 48].map(size => (
+              <button
+                key={size}
+                onClick={() => handlePageSizeChange(size)}
+                className={`px-2.5 py-1 rounded-lg text-xs md:text-sm font-semibold transition-all cursor-pointer ${pageSize === size
+                  ? 'bg-sky-700 text-white shadow-md'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+
+          {/* Page navigation */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => goToPage(1)}
+              disabled={currentPage === 1}
+              className="px-2 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+              title="First page"
+            >
+              ««
+            </button>
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+              title="Previous page"
+            >
+              ‹
+            </button>
+
+            {/* Page number buttons */}
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+              // Calculate which page numbers to show (centered around current page)
+              let start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+              const end = Math.min(totalPages, start + 4);
+              const pageNum = start + i;
+              if (pageNum > totalPages) return null;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => goToPage(pageNum)}
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentPage === pageNum
+                    ? 'bg-sky-700 text-white shadow-md'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" title="Next page"
+            >
+              ›
+            </button>
+            <button
+              onClick={() => goToPage(totalPages)}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700" title="Last page"
+            >
+              »
+            </button>
+          </div>
         </div>
       )}
 
