@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Sun,
   Moon,
-  Home
+  Home,
+  BookOpen
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
@@ -83,6 +84,7 @@ export default function Sidebar() {
     { path: '/tasks', name: 'Kanban Board', icon: <ListTodo className="w-5 h-5" /> },
     { path: '/team', name: 'Team Members', icon: <Users className="w-5 h-5" /> },
     { path: '/activities', name: 'Activity Logs', icon: <Activity className="w-5 h-5" /> },
+    { path: '/manual', name: 'User Manual', icon: <BookOpen className="w-5 h-5" /> },
   ];
 
   return (

@@ -12,7 +12,8 @@ import {
   AlertCircle,
   Clock,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  BookOpen
 } from 'lucide-react';
 import { AppDispatch } from '../../store/store';
 import { Project, Task, Activity, User } from '../../types';
@@ -160,6 +161,27 @@ export default function DashboardView() {
           </div>
         ))}
       </div>
+
+      {/* User Manual Link */}
+      <button
+        onClick={() => router.push('/manual')}
+        className="w-full flex items-center justify-between p-5 md:p-6 glass-panel border border-slate-200/80 dark:border-slate-800/80 rounded-2xl hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-all cursor-pointer group"
+      >
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-sky-100 dark:bg-sky-950/60">
+            <BookOpen className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+          </div>
+          <div>
+            <h3 className="font-bold text-sm md:text-base lg:text-lg text-slate-700 dark:text-slate-200">
+              User Manual
+            </h3>
+            <p className="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-0.5">
+              Your role-based capabilities, responsibilities, and how-to guide.
+            </p>
+          </div>
+        </div>
+        <ArrowRight className="w-5 h-5 text-slate-400 dark:text-slate-500 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors" />
+      </button>
 
       {/* Charts & Analytics Row */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
