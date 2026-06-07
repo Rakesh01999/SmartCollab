@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { activitiesAPI } from '../../lib/api';
 import { showToast } from '../../store/appSlice';
@@ -12,7 +13,8 @@ export default function ActivityLogView() {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState<boolean>(true);
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [search, setSearch] = useState<string>('');
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState<string>(searchParams.get('search') || '');
   const [typeFilter, setTypeFilter] = useState<string>('all');
 
   const fetchActivities = async () => {

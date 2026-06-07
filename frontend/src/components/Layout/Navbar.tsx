@@ -3,9 +3,9 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setSearchQuery, showToast, toggleSidebar } from '../../store/appSlice';
 import { logout } from '../../store/authSlice';
-import { Menu, Search, Bell, LogOut, User, ChevronDown, Home } from 'lucide-react';
-import { useState, ChangeEvent, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { Menu, Search, Bell, LogOut, User, ChevronDown, Home, ArrowRight } from 'lucide-react';
+import { useState, ChangeEvent, useRef, useEffect, KeyboardEvent } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { RootState, AppDispatch } from '../../store/store';
 
 interface NavbarProps {
@@ -15,6 +15,7 @@ interface NavbarProps {
 export default function Navbar({ title }: NavbarProps) {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const pathname = usePathname();
   const searchQuery = useSelector((state: RootState) => state.app.searchQuery);
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const user = useSelector((state: RootState) => state.auth.user);
@@ -36,6 +37,25 @@ export default function Navbar({ title }: NavbarProps) {
     dispatch(setSearchQuery(e.target.value));
   };
 
+  const executeSearch = () => {
+    if (!searchQuery.trim()) return;
+    const query = encodeURIComponent(searchQuery.trim());
+    // Navigate to the relevant page based on current context
+    if (pathname.startsWith('/projects')) {
+      router.push(`/projects?search=${query}`);
+    } else if (pathname.startsWith('/activities')) {
+      router.push(`/activities?search=${query}`);
+    } else {
+      // Default to tasks page for search
+      router.push(`/tasks?search=${query}`);
+    }
+    dispatch(setSearchQuery(''));
+  };
+
+  const handleSearchKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') executeSearch();
+  };
+
   return (
     <header className="h-16 glass-panel border-b border-slate-200/80 dark:border-slate-800/80 px-4 flex items-center justify-between sticky top-0 z-20">
       {/* Left section: mobile sidebar trigger & Page title */}
@@ -54,16 +74,24 @@ export default function Navbar({ title }: NavbarProps) {
 
       {/* Middle section: Search bar */}
       <div className="flex-1 max-w-md mx-4">
-        <div className="relative">
+        <div className="relative flex items-center">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
           <input
             type="text"
             placeholder="Search projects, tasks..."
             value={searchQuery}
             onChange={handleSearchChange}
+            onKeyDown={handleSearchKeyDown}
             id="global-search-input"
-            className="w-full pl-10 pr-4 py-2 bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-600/60 focus:ring-1 focus:ring-sky-600/30 transition-all"
+            className="w-full pl-10 pr-10 py-2 bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-600/60 focus:ring-1 focus:ring-sky-600/30 transition-all"
           />
+          <button
+            onClick={executeSearch}
+            className="absolute right-1.5 top-1.5 p-1.5 rounded-md bg-sky-600 hover:bg-sky-500 text-white transition-colors cursor-pointer"
+            aria-label="Search"
+          >
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
+import { useSearchParams } from 'next/navigation';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useDispatch } from 'react-redux';
@@ -31,7 +32,8 @@ export default function ProjectsView() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [team, setTeam] = useState<User[]>([]);
-  const [search, setSearch] = useState<string>('');
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState<string>(searchParams.get('search') || '');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   // Modal States

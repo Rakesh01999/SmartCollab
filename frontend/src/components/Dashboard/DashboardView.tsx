@@ -165,22 +165,22 @@ export default function DashboardView() {
       {/* User Manual Link */}
       <button
         onClick={() => router.push('/manual')}
-        className="w-full flex items-center justify-between p-5 md:p-6 glass-panel border border-slate-200/80 dark:border-slate-800/80 rounded-2xl hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-all cursor-pointer group"
+        className="w-full flex items-center justify-between p-3 md:p-4 glass-panel border border-slate-200/80 dark:border-slate-800/80 rounded-xl hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-all cursor-pointer group"
       >
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-sky-100 dark:bg-sky-950/60">
-            <BookOpen className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-lg bg-sky-100 dark:bg-sky-950/60">
+            <BookOpen className="w-4 h-4 text-sky-600 dark:text-sky-400" />
           </div>
           <div>
-            <h3 className="font-bold text-sm md:text-base lg:text-lg text-slate-700 dark:text-slate-200">
+            <h3 className="font-bold text-sm md:text-base text-slate-700 dark:text-slate-200">
               User Manual
             </h3>
-            <p className="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
               Your role-based capabilities, responsibilities, and how-to guide.
             </p>
           </div>
         </div>
-        <ArrowRight className="w-5 h-5 text-slate-400 dark:text-slate-500 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors" />
+        <ArrowRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors" />
       </button>
 
       {/* Charts & Analytics Row */}

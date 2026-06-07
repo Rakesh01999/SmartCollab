@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, FormEvent, ChangeEvent } from 'react';
+import { useSearchParams } from 'next/navigation';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,7 +37,8 @@ export default function TasksView() {
   const [team, setTeam] = useState<User[]>([]);
 
   // Filters & Search
-  const [search, setSearch] = useState<string>('');
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState<string>(searchParams.get('search') || '');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
   const [deadlineFilter, setDeadlineFilter] = useState<string>('all');

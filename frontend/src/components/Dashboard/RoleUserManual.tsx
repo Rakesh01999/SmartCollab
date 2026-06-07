@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { usePermissions } from '../../hooks/usePermissions';
 import {
     BookOpen,
@@ -13,7 +14,8 @@ import {
     MessageSquare,
     ClipboardList,
     Eye,
-    Sparkles
+    Sparkles,
+    ArrowRight
 } from 'lucide-react';
 
 interface ManualItem {
@@ -28,6 +30,7 @@ interface ManualSection {
 }
 
 export default function RoleUserManual() {
+    const router = useRouter();
     const permissions = usePermissions();
 
     const roleLabel = permissions.isAdmin
@@ -120,7 +123,7 @@ export default function RoleUserManual() {
         ? 'As an Admin, you have full control over the SmartCollab platform. You can create, edit, and delete projects and tasks, manage team membership, perform bulk operations, and configure project assignments. You see all operational buttons across every page.'
         : permissions.isPM
             ? 'As a Project Manager, you manage projects and tasks across the platform. You can create/edit/delete projects and tasks, assign members to projects, perform bulk operations, and track all team activity. You cannot add new team members to the system — that is reserved for Admins.'
-            : 'As a Team Member, you focus on executing tasks assigned to you. You can edit, move, and change the status of your own tasks, attach files to them, and comment on any task. Buttons for actions you cannot perform are hidden from your view.';
+            : 'As a Team Member, you focus on executing tasks assigned to you. You can edit, move, and change the status of your own tasks, attach files to them, and comment on any task.';
 
     const responsibilitySummary = permissions.isAdmin
         ? 'Full platform governance • Team composition control • Project lifecycle management • Task oversight & bulk operations'
@@ -216,27 +219,34 @@ export default function RoleUserManual() {
                 {/* Quick Reference - How to navigate */}
                 <div className="px-4 md:px-6 pb-4 md:pb-6">
                     <div className="rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white/40 dark:bg-slate-900/40 p-4 md:p-5">
-                        <h4 className="font-bold text-sm md:text-base text-slate-700 dark:text-slate-200 flex items-center gap-2 mb-3">
+                        <h4 className="font-bold text-sm md:text-base text-slate-700 dark:text-slate-200 flex items-center gap-2 mb-4">
                             <Eye className="w-4 h-4 text-sky-600 dark:text-sky-400" />
                             Quick Navigation Guide
                         </h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
                             {[
-                                { path: '/dashboard', name: 'Dashboard', icon: <LayoutDashboard className="w-3.5 h-3.5" />, desc: 'KPIs, charts, workload & activity overview' },
-                                { path: '/projects', name: 'Project Board', icon: <FolderKanban className="w-3.5 h-3.5" />, desc: 'Create & manage projects (if permitted)' },
-                                { path: '/tasks', name: 'Kanban Board', icon: <ListTodo className="w-3.5 h-3.5" />, desc: 'View, move, and manage tasks by status' },
-                                { path: '/team', name: 'Team Directory', icon: <Users className="w-3.5 h-3.5" />, desc: 'Browse members & workloads' },
-                                { path: '/activities', name: 'Activity Logs', icon: <Activity className="w-3.5 h-3.5" />, desc: 'Chronological system event history' },
+                                { path: '/dashboard', name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, desc: 'KPIs, charts, workload & activity overview' },
+                                { path: '/projects', name: 'Project Board', icon: <FolderKanban className="w-5 h-5" />, desc: 'Create & manage projects' },
+                                { path: '/tasks', name: 'Kanban Board', icon: <ListTodo className="w-5 h-5" />, desc: 'View, move & manage tasks' },
+                                { path: '/team', name: 'Team Directory', icon: <Users className="w-5 h-5" />, desc: 'Browse members & workloads' },
+                                { path: '/activities', name: 'Activity Logs', icon: <Activity className="w-5 h-5" />, desc: 'System event history' },
                             ].map((nav) => (
-                                <div key={nav.path} className="flex items-start gap-2 p-2 rounded-lg bg-slate-50/50 dark:bg-slate-900/30 border border-slate-200/50 dark:border-slate-800/50">
-                                    <div className="p-1 rounded-md bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 flex-shrink-0">
+                                <button
+                                    key={nav.path}
+                                    onClick={() => router.push(nav.path)}
+                                    className="group flex flex-col items-center gap-1.5 p-3 md:p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/60 hover:border-sky-300 dark:hover:border-sky-600/40 hover:bg-sky-50/50 dark:hover:bg-sky-950/30 hover:shadow-md transition-all cursor-pointer text-center"
+                                >
+                                    <div className="p-2 rounded-lg bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 group-hover:bg-sky-200 dark:group-hover:bg-sky-900/60 transition-colors">
                                         {nav.icon}
                                     </div>
-                                    <div className="min-w-0">
-                                        <span className="font-semibold text-xs md:text-sm text-slate-600 dark:text-slate-300 block">{nav.name}</span>
-                                        <span className="text-[10px] md:text-xs text-slate-400 dark:text-slate-500 block mt-0.5">{nav.desc}</span>
-                                    </div>
-                                </div>
+                                    <span className="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors leading-tight">
+                                        {nav.name}
+                                    </span>
+                                    <span className="text-[10px] md:text-xs text-slate-400 dark:text-slate-500 leading-snug line-clamp-2">
+                                        {nav.desc}
+                                    </span>
+                                    <ArrowRight className="w-3 h-3 text-slate-300 dark:text-slate-600 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors" />
+                                </button>
                             ))}
                         </div>
                     </div>
