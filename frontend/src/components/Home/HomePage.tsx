@@ -691,13 +691,15 @@ export default function HomePage() {
             </section>
 
             {/* ===== ANIMATED WAVE SEPARATOR ===== */}
-            <div className="relative h-24 sm:h-32 overflow-hidden">
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-sky-600/10 dark:text-sky-500/20">
-                    <path d="M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 C1350,120 1550,0 1800,60 C2050,120 2250,0 2400,60 L2400,120 L0,120 Z" fill="currentColor" />
-                </svg>
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-teal-500/8 dark:text-teal-500/15" style={{ animationDelay: '2s' }}>
-                    <path d="M0,80 C200,20 400,100 600,80 C800,20 1000,100 1200,80 C1400,20 1600,100 1800,80 C2000,20 2200,100 2400,80 L2400,120 L0,120 Z" fill="currentColor" />
-                </svg>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div className="relative h-24 sm:h-32 overflow-hidden" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-sky-600/10 dark:text-sky-500/20">
+                        <path d="M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 C1350,120 1550,0 1800,60 C2050,120 2250,0 2400,60 L2400,120 L0,120 Z" fill="currentColor" />
+                    </svg>
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-teal-500/8 dark:text-teal-500/15" style={{ animationDelay: '2s' }}>
+                        <path d="M0,80 C200,20 400,100 600,80 C800,20 1000,100 1200,80 C1400,20 1600,100 1800,80 C2000,20 2200,100 2400,80 L2400,120 L0,120 Z" fill="currentColor" />
+                    </svg>
+                </div>
             </div>
 
             {/* ===== HOW IT WORKS SECTION ===== */}
@@ -831,49 +833,47 @@ export default function HomePage() {
             </section>
 
             {/* ===== ANIMATED WAVE SEPARATOR ===== */}
-            <div className="relative h-20 sm:h-28 overflow-hidden">
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-cyan-500/8 dark:text-cyan-500/15">
-                    <path d="M0,40 C200,100 400,0 600,40 C800,100 1000,0 1200,40 C1400,100 1600,0 1800,40 C2000,100 2200,0 2400,40 L2400,120 L0,120 Z" fill="currentColor" />
-                </svg>
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-teal-500/6 dark:text-teal-500/12" style={{ animationDelay: '3s' }}>
-                    <path d="M0,60 C200,20 400,80 600,60 C800,20 1000,80 1200,60 C1400,20 1600,80 1800,60 C2000,20 2200,80 2400,60 L2400,120 L0,120 Z" fill="currentColor" />
-                </svg>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div className="relative h-24 sm:h-32 overflow-hidden" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-cyan-500/8 dark:text-cyan-500/15">
+                        <path d="M0,40 C200,100 400,0 600,40 C800,100 1000,0 1200,40 C1400,100 1600,0 1800,40 C2000,100 2200,0 2400,40 L2400,120 L0,120 Z" fill="currentColor" />
+                    </svg>
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-teal-500/6 dark:text-teal-500/12" style={{ animationDelay: '3s' }}>
+                        <path d="M0,60 C200,20 400,80 600,60 C800,20 1000,80 1200,60 C1400,20 1600,80 1800,60 C2000,20 2200,80 2400,60 L2400,120 L0,120 Z" fill="currentColor" />
+                    </svg>
+                </div>
             </div>
 
             {/* ===== TRUSTED BY TICKER ===== */}
-            <section id="trusted-by" data-animate className="py-8 sm:py-12 relative overflow-hidden">
+            <section id="trusted-by" data-animate className="py-12 sm:py-16 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                     <div className={`text-center mb-6 transition-all duration-700 ${isAnimated('trusted-by') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                         <p className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-widest">
                             Trusted by innovative teams worldwide
                         </p>
                     </div>
-                </div>
-                <div className="relative">
-                    {/* Fade edges */}
-                    <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[var(--background)] to-transparent z-10 pointer-events-none"></div>
-                    <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[var(--background)] to-transparent z-10 pointer-events-none"></div>
 
-                    <div className="flex animate-scroll-left">
-                        {[...Array(2)].map((_, dupIdx) => (
-                            <div key={dupIdx} className="flex items-center gap-10 sm:gap-14 px-6 whitespace-nowrap">
-                                {trustedBrands.map((brand) => (
-                                    <div key={`${brand}-${dupIdx}`} className="flex items-center gap-2 text-[var(--text-muted)] opacity-60 hover:opacity-100 transition-opacity">
-                                        <BarChart3 className="w-5 h-5 text-sky-600/70" />
-                                        <span className="text-base sm:text-lg font-semibold tracking-tight">{brand}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        ))}
+                    <div className="relative overflow-hidden">
+                        {/* Fade edges */}
+                        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[var(--background)] to-transparent z-10 pointer-events-none"></div>
+                        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[var(--background)] to-transparent z-10 pointer-events-none"></div>
+
+                        <div className="flex animate-scroll-left">
+                            {[...Array(2)].map((_, dupIdx) => (
+                                <div key={dupIdx} className="flex items-center gap-10 sm:gap-14 px-6 whitespace-nowrap">
+                                    {trustedBrands.map((brand) => (
+                                        <div key={`${brand}-${dupIdx}`} className="flex items-center gap-2 text-[var(--text-muted)] opacity-60 hover:opacity-100 transition-opacity">
+                                            <BarChart3 className="w-5 h-5 text-sky-600/70" />
+                                            <span className="text-base sm:text-lg font-semibold tracking-tight">{brand}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* ===== DECORATIVE MESH GRADIENT ===== */}
-            <div className="relative h-16 sm:h-24 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-600/3 via-sky-700/5 to-cyan-600/3 dark:from-teal-600/8 dark:via-sky-600/10 dark:to-cyan-600/8 animate-mesh-float pointer-events-none"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[100px] bg-sky-600/5 dark:bg-sky-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-            </div>
 
             {/* ===== STATS SECTION ===== */}
             <section id="stats" data-animate className="py-12 sm:py-16 relative">
@@ -943,13 +943,15 @@ export default function HomePage() {
             </section>
 
             {/* ===== ANIMATED WAVE SEPARATOR ===== */}
-            <div className="relative h-20 sm:h-28 overflow-hidden">
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-amber-500/8 dark:text-amber-500/15">
-                    <path d="M0,80 C200,20 400,100 600,80 C800,20 1000,100 1200,80 C1400,20 1600,100 1800,80 C2000,20 2200,100 2400,80 L2400,120 L0,120 Z" fill="currentColor" />
-                </svg>
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-orange-500/6 dark:text-orange-500/12" style={{ animationDelay: '2.5s' }}>
-                    <path d="M0,50 C200,90 400,10 600,50 C800,90 1000,10 1200,50 C1400,90 1600,10 1800,50 C2000,90 2200,10 2400,50 L2400,120 L0,120 Z" fill="currentColor" />
-                </svg>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div className="relative h-20 sm:h-28 overflow-hidden" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-amber-500/8 dark:text-amber-500/15">
+                        <path d="M0,80 C200,20 400,100 600,80 C800,20 1000,100 1200,80 C1400,20 1600,100 1800,80 C2000,20 2200,100 2400,80 L2400,120 L0,120 Z" fill="currentColor" />
+                    </svg>
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute bottom-0 w-[200%] h-full animate-wave-move text-orange-500/6 dark:text-orange-500/12" style={{ animationDelay: '2.5s' }}>
+                        <path d="M0,50 C200,90 400,10 600,50 C800,90 1000,10 1200,50 C1400,90 1600,10 1800,50 C2000,90 2200,10 2400,50 L2400,120 L0,120 Z" fill="currentColor" />
+                    </svg>
+                </div>
             </div>
 
             {/* ===== TESTIMONIALS SECTION ===== */}
