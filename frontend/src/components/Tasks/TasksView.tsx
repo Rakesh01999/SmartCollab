@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { tasksAPI, projectsAPI, teamAPI } from '../../lib/api';
 import { showToast, setActiveProjectId } from '../../store/appSlice';
 import { useConfirm } from '../../hooks/useConfirm';
+import { usePermissions } from '../../hooks/usePermissions';
 import {
   Plus,
   Search,
@@ -27,7 +28,6 @@ import { Task, Project, User } from '../../types';
 
 export default function TasksView() {
   const dispatch = useDispatch<AppDispatch>();
-  const currentUser = useSelector((state: RootState) => state.auth.user);
   const activeProjectId = useSelector((state: RootState) => state.app.activeProjectId);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -78,7 +78,7 @@ export default function TasksView() {
   const [uploadingFile, setUploadingFile] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
-  const isAuthorized = currentUser && ['Admin', 'Project Manager'].includes(currentUser.role);
+  const permissions = usePermissions();
 
   const loadAllData = async () => {
     try {
@@ -132,7 +132,7 @@ export default function TasksView() {
   }, [activeProjectId, priorityFilter, assigneeFilter, deadlineFilter, sortBy, search]);
 
   const handleOpenCreateTask = () => {
-    if (!isAuthorized) return;
+    if (!permissions.canCreateTask) return;
     setIsEditMode(false);
     setTaskTitle('');
     setTaskDesc('');
@@ -145,14 +145,10 @@ export default function TasksView() {
   };
 
   const handleOpenEditTask = (task: Task) => {
-    // Check RBAC permission: Team Member can only edit status / comments
-    // Admin & PM can edit anything
-    if (currentUser?.role === 'Team Member') {
-      const isAssigned = task.assignedMember && (task.assignedMember as User)._id === currentUser.id;
-      if (!isAssigned) {
-        dispatch(showToast({ message: 'Team Members can only edit tasks assigned to them.', type: 'warning' }));
-        return;
-      }
+    // RBAC: only users with edit permission for this task can open the edit form
+    if (!permissions.canEditTask(task)) {
+      dispatch(showToast({ message: 'You do not have permission to edit this task.', type: 'warning' }));
+      return;
     }
 
     setIsEditMode(true);
@@ -219,13 +215,10 @@ export default function TasksView() {
   };
 
   const handleQuickStatusChange = async (task: Task, newStatus: string) => {
-    // RBAC: check if team member is assigned to task
-    if (currentUser?.role === 'Team Member') {
-      const isAssigned = task.assignedMember && (task.assignedMember as User)._id === currentUser.id;
-      if (!isAssigned) {
-        dispatch(showToast({ message: 'Team Members can only update the status of tasks assigned to them.', type: 'warning' }));
-        return;
-      }
+    // RBAC: only users with status-change permission for this task can move it
+    if (!permissions.canChangeTaskStatus(task)) {
+      dispatch(showToast({ message: 'You do not have permission to change the status of this task.', type: 'warning' }));
+      return;
     }
 
     try {
@@ -245,7 +238,7 @@ export default function TasksView() {
   const { confirm } = useConfirm();
 
   const handleDeleteTask = async (id: string) => {
-    if (!isAuthorized) return;
+    if (!permissions.canDeleteTask) return;
     const confirmed = await confirm({
       title: 'Delete Task',
       message: 'Delete this task permanently? This action cannot be undone.',
@@ -331,12 +324,9 @@ export default function TasksView() {
         try {
           const task = tasks.find(t => t._id === taskId);
           // Check RBAC permission for each task
-          if (currentUser?.role === 'Team Member') {
-            const isAssigned = task && task.assignedMember && (task.assignedMember as User)._id === currentUser.id;
-            if (!isAssigned) {
-              failCount++;
-              continue;
-            }
+          if (!permissions.canChangeTaskStatus(task)) {
+            failCount++;
+            continue;
           }
           await tasksAPI.update(taskId, { status: bulkStatus });
           successCount++;
@@ -351,7 +341,7 @@ export default function TasksView() {
       }
       if (failCount > 0) {
         dispatch(showToast({
-          message: `Failed to update ${failCount} tasks. ${currentUser?.role === 'Team Member' ? 'Only assigned tasks can be updated.' : errorMsg}`,
+          message: `Failed to update ${failCount} tasks. ${permissions.isTeamMember ? 'Only assigned tasks can be updated.' : errorMsg}`,
           type: 'warning'
         }));
       }
@@ -368,7 +358,7 @@ export default function TasksView() {
 
   // Bulk delete
   const handleBulkDelete = async () => {
-    if (!isAuthorized || selectedTaskIds.length === 0) return;
+    if (!permissions.canBulkDeleteTasks || selectedTaskIds.length === 0) return;
     const confirmed = await confirm({
       title: 'Bulk Delete Tasks',
       message: `Are you sure you want to delete all ${selectedTaskIds.length} selected tasks? This action cannot be undone.`,
@@ -420,7 +410,7 @@ export default function TasksView() {
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Organize team deliverables and map progress workflows.</p>
         </div>
 
-        {isAuthorized && (
+        {permissions.canCreateTask && (
           <button
             onClick={handleOpenCreateTask}
             className="flex items-center gap-2 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-sm md:text-base font-semibold transition-all shadow-lg shadow-sky-700/20 cursor-pointer"
@@ -544,8 +534,8 @@ export default function TasksView() {
 
       </div>
 
-      {/* Bulk Actions Panel */}
-      {selectedTaskIds.length > 0 && (
+      {/* Bulk Actions Panel - only visible to authorized users (Admin/PM) */}
+      {selectedTaskIds.length > 0 && permissions.canBulkSelectTasks && (
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white dark:bg-slate-900 border border-sky-200 dark:border-sky-500/20 p-4 rounded-xl gap-4 shadow-md">
           <div className="flex items-center gap-2">
             <CheckSquare className="w-5 h-5 text-sky-600 dark:text-sky-400" />
@@ -574,7 +564,7 @@ export default function TasksView() {
               Apply Status
             </button>
 
-            {isAuthorized && (
+            {permissions.canBulkDeleteTasks && (
               <button
                 onClick={handleBulkDelete}
                 className="p-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-500/30 hover:border-rose-500 text-rose-600 dark:text-rose-400 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-950/60 transition-all cursor-pointer"
@@ -637,15 +627,17 @@ export default function TasksView() {
                           }`}
                         onClick={() => handleOpenTaskDetail(task)}
                       >
-                        {/* Top section: Checkbox, Project and Priority */}
+                        {/* Top section: Checkbox (authorized only), Project and Priority */}
                         <div className="flex justify-between items-start gap-2 mb-2" onClick={e => e.stopPropagation()}>
                           <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              onChange={() => toggleSelectTask(task._id as string)}
-                              className="w-4 h-4 accent-sky-700 rounded bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-800 cursor-pointer"
-                            />
+                            {permissions.canBulkSelectTasks && (
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => toggleSelectTask(task._id as string)}
+                                className="w-4 h-4 accent-sky-700 rounded bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-800 cursor-pointer"
+                              />
+                            )}
                             <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide truncate max-w-[120px]">
                               {(task.project as Project)?.name || 'No Project'}
                             </span>
@@ -678,9 +670,9 @@ export default function TasksView() {
                             </span>
                           </div>
 
-                          {/* Status Shift Buttons */}
+                          {/* Status Shift Buttons - only visible if user can move this task */}
                           <div className="flex items-center gap-2">
-                            {colName !== 'Todo' && (
+                            {permissions.canMoveTask(task) && colName !== 'Todo' && (
                               <button
                                 onClick={() => handleQuickStatusChange(task, colName === 'Completed' ? 'In Progress' : 'Todo')}
                                 className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-400 hover:text-sky-700 dark:hover:text-sky-400 cursor-pointer transition-colors"
@@ -707,7 +699,7 @@ export default function TasksView() {
                               </span>
                             )}
 
-                            {colName !== 'Completed' && (
+                            {permissions.canMoveTask(task) && colName !== 'Completed' && (
                               <button
                                 onClick={() => handleQuickStatusChange(task, colName === 'Todo' ? 'In Progress' : 'Completed')}
                                 className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-400 hover:text-sky-700 dark:hover:text-sky-400 cursor-pointer transition-colors"
@@ -887,16 +879,18 @@ export default function TasksView() {
               </div>
 
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    setShowTaskDetailModal(false);
-                    handleOpenEditTask(activeTask);
-                  }}
-                  className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs md:text-sm font-semibold transition-colors cursor-pointer"
-                >
-                  Edit
-                </button>
-                {isAuthorized && (
+                {permissions.canEditTask(activeTask) && (
+                  <button
+                    onClick={() => {
+                      setShowTaskDetailModal(false);
+                      handleOpenEditTask(activeTask);
+                    }}
+                    className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs md:text-sm font-semibold transition-colors cursor-pointer"
+                  >
+                    Edit
+                  </button>
+                )}
+                {permissions.canDeleteTask && (
                   <button
                     onClick={() => handleDeleteTask(activeTask._id as string)}
                     className="p-1.5 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-500/20 hover:border-rose-500 text-rose-600 dark:text-rose-400 rounded-lg transition-colors cursor-pointer"
@@ -953,18 +947,20 @@ export default function TasksView() {
                     )}
                   </div>
 
-                  {/* Upload button wrapper */}
+                  {/* Upload button wrapper - only visible if user can attach files to this task */}
                   <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs md:text-sm font-semibold transition-all cursor-pointer border border-slate-200 dark:border-slate-700">
-                      <Paperclip className="w-3.5 h-3.5" />
-                      Attach File
-                      <input
-                        type="file"
-                        onChange={handleUploadAttachment}
-                        className="hidden"
-                        disabled={uploadingFile}
-                      />
-                    </label>
+                    {permissions.canAttachFile(activeTask) && (
+                      <label className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs md:text-sm font-semibold transition-all cursor-pointer border border-slate-200 dark:border-slate-700">
+                        <Paperclip className="w-3.5 h-3.5" />
+                        Attach File
+                        <input
+                          type="file"
+                          onChange={handleUploadAttachment}
+                          className="hidden"
+                          disabled={uploadingFile}
+                        />
+                      </label>
+                    )}
                     {uploadingFile && (
                       <div className="flex-1 flex items-center gap-2">
                         <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden">
@@ -1031,35 +1027,41 @@ export default function TasksView() {
                 </h4>
 
                 <div className="space-y-4">
-                  {/* Status selection */}
+                  {/* Status selection - only interactive if user can change task status */}
                   <div className="space-y-1.5">
                     <span className="text-[10px] md:text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Status Workflow</span>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {['Todo', 'In Progress', 'Completed'].map(st => {
-                        const isCurrent = activeTask.status === st;
-                        const colors: any = {
-                          Todo: 'border-slate-200 dark:border-slate-800 hover:border-slate-400 hover:text-slate-700 dark:hover:text-slate-200',
-                          'In Progress': 'border-blue-200 dark:border-blue-900/40 text-blue-600 dark:text-blue-500 hover:border-blue-500 hover:text-blue-500 dark:hover:text-blue-400',
-                          Completed: 'border-emerald-200 dark:border-emerald-900/40 text-emerald-600 dark:text-emerald-500 hover:border-emerald-500 hover:text-emerald-500 dark:hover:text-emerald-400',
-                        }[st];
-                        const activeBg: any = {
-                          Todo: 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-600',
-                          'In Progress': 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.15)]',
-                          Completed: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.15)]',
-                        }[st];
+                    {permissions.canChangeTaskStatus(activeTask) ? (
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {['Todo', 'In Progress', 'Completed'].map(st => {
+                          const isCurrent = activeTask.status === st;
+                          const colors: any = {
+                            Todo: 'border-slate-200 dark:border-slate-800 hover:border-slate-400 hover:text-slate-700 dark:hover:text-slate-200',
+                            'In Progress': 'border-blue-200 dark:border-blue-900/40 text-blue-600 dark:text-blue-500 hover:border-blue-500 hover:text-blue-500 dark:hover:text-blue-400',
+                            Completed: 'border-emerald-200 dark:border-emerald-900/40 text-emerald-600 dark:text-emerald-500 hover:border-emerald-500 hover:text-emerald-500 dark:hover:text-emerald-400',
+                          }[st];
+                          const activeBg: any = {
+                            Todo: 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-600',
+                            'In Progress': 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.15)]',
+                            Completed: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.15)]',
+                          }[st];
 
-                        return (
-                          <button
-                            key={st}
-                            onClick={() => handleQuickStatusChange(activeTask, st)}
-                            className={`px-2 py-1.5 border rounded-lg text-[10px] md:text-xs font-bold transition-all text-center cursor-pointer ${isCurrent ? activeBg : `text-slate-500 ${colors}`
-                              }`}
-                          >
-                            {st}
-                          </button>
-                        );
-                      })}
-                    </div>
+                          return (
+                            <button
+                              key={st}
+                              onClick={() => handleQuickStatusChange(activeTask, st)}
+                              className={`px-2 py-1.5 border rounded-lg text-[10px] md:text-xs font-bold transition-all text-center cursor-pointer ${isCurrent ? activeBg : `text-slate-500 ${colors}`
+                                }`}
+                            >
+                              {st}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200">
+                        {activeTask.status}
+                      </div>
+                    )}
                   </div>
 
                   {/* Due date status */}

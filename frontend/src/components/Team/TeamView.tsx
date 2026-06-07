@@ -1,16 +1,17 @@
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { teamAPI } from '../../lib/api';
 import { showToast } from '../../store/appSlice';
+import { usePermissions } from '../../hooks/usePermissions';
 import { Users, UserPlus, Mail, X, UserCheck, Eye, EyeOff } from 'lucide-react';
-import { RootState, AppDispatch } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { User } from '../../types';
 
 export default function TeamView() {
   const dispatch = useDispatch<AppDispatch>();
-  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const permissions = usePermissions();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [workloads, setWorkloads] = useState<any[]>([]);
@@ -22,8 +23,6 @@ export default function TeamView() {
   const [password, setPassword] = useState<string>('');
   const [role, setRole] = useState<string>('Team Member');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const isAdmin = currentUser && currentUser.role === 'Admin';
 
   const fetchWorkloads = async () => {
     try {
@@ -77,7 +76,7 @@ export default function TeamView() {
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Manage access controls, roles, and review member workloads.</p>
         </div>
 
-        {isAdmin && (
+        {permissions.canAddTeamMember && (
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-sm md:text-base font-semibold transition-all shadow-lg shadow-sky-700/20 cursor-pointer"
@@ -179,7 +178,7 @@ export default function TeamView() {
       )}
 
       {/* Add Team Member Modal (Admin-only) */}
-      {showAddModal && isAdmin && (
+      {showAddModal && permissions.canAddTeamMember && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl animate-fade-in-up">
             <div className="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-slate-800">

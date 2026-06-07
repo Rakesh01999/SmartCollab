@@ -3,10 +3,11 @@
 import { useEffect, useState, FormEvent } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { projectsAPI, teamAPI, tasksAPI } from '../../lib/api';
 import { showToast } from '../../store/appSlice';
 import { useConfirm } from '../../hooks/useConfirm';
+import { usePermissions } from '../../hooks/usePermissions';
 import {
   FolderPlus,
   Calendar,
@@ -19,12 +20,12 @@ import {
   X,
   Users
 } from 'lucide-react';
-import { RootState, AppDispatch } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { Project, Task, User } from '../../types';
 
 export default function ProjectsView() {
   const dispatch = useDispatch<AppDispatch>();
-  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const permissions = usePermissions();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -47,8 +48,6 @@ export default function ProjectsView() {
 
   // Member Assign States
   const [activeAssignProjId, setActiveAssignProjId] = useState<string | null>(null);
-
-  const isAuthorized = currentUser && ['Admin', 'Project Manager'].includes(currentUser.role);
 
   const fetchAllData = async () => {
     try {
@@ -73,7 +72,7 @@ export default function ProjectsView() {
   }, []);
 
   const handleOpenCreateModal = () => {
-    if (!isAuthorized) return;
+    if (!permissions.canCreateProject) return;
     setIsEditMode(false);
     setProjName('');
     setProjDesc('');
@@ -84,7 +83,7 @@ export default function ProjectsView() {
   };
 
   const handleOpenEditModal = (proj: Project) => {
-    if (!isAuthorized) return;
+    if (!permissions.canEditProject) return;
     setIsEditMode(true);
     setCurrentProjId(proj._id);
     setProjName(proj.name);
@@ -131,7 +130,7 @@ export default function ProjectsView() {
   const { confirm } = useConfirm();
 
   const handleDeleteProject = async (id: string) => {
-    if (!isAuthorized) return;
+    if (!permissions.canDeleteProject) return;
     const confirmed = await confirm({
       title: 'Delete Project',
       message: 'Are you absolutely sure you want to delete this project and all its tasks? This action is permanent and cannot be undone.',
@@ -189,7 +188,7 @@ export default function ProjectsView() {
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Manage project scope, assignments, and check timelines.</p>
         </div>
 
-        {isAuthorized && (
+        {permissions.canCreateProject && (
           <button
             onClick={handleOpenCreateModal}
             className="flex items-center gap-2 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg text-sm md:text-base font-semibold transition-all shadow-lg shadow-sky-700/20 cursor-pointer"
@@ -261,22 +260,26 @@ export default function ProjectsView() {
                       {proj.status}
                     </span>
 
-                    {isAuthorized && (
+                    {(permissions.canEditProject || permissions.canDeleteProject) && (
                       <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => handleOpenEditModal(proj)}
-                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
-                          title="Edit project"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteProject(proj._id)}
-                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors cursor-pointer"
-                          title="Delete project"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        {permissions.canEditProject && (
+                          <button
+                            onClick={() => handleOpenEditModal(proj)}
+                            className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer"
+                            title="Edit project"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        {permissions.canDeleteProject && (
+                          <button
+                            onClick={() => handleDeleteProject(proj._id)}
+                            className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors cursor-pointer"
+                            title="Delete project"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
@@ -337,7 +340,7 @@ export default function ProjectsView() {
                       )}
                     </div>
 
-                    {isAuthorized && (
+                    {permissions.canAddMemberToProject && (
                       <div className="relative">
                         <button
                           onClick={() => setActiveAssignProjId(activeAssignProjId === proj._id ? null : proj._id)}
