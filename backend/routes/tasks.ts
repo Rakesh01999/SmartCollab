@@ -11,8 +11,11 @@ import { AuthRequest } from '../types';
 
 const router = express.Router();
 
-// Create uploads folder if it doesn't exist
-const uploadDir = path.join(__dirname, '../uploads');
+// ─── Upload directory: /tmp on Vercel (ephemeral writable), local project dir otherwise ──
+const uploadDir = process.env.VERCEL
+  ? path.join('/tmp', 'uploads')
+  : path.join(__dirname, '../uploads');
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -50,183 +53,147 @@ router.get('/', protect, async (req: AuthRequest, res: Response) => {
       status,
       priority,
       assignedMember,
-      deadlineStatus,
       search,
-      sortBy,
       page = '1',
-      limit = '20',
+      limit = '12',
     } = req.query as Record<string, string>;
 
-    const query: Record<string, unknown> = {};
-
-    if (project) query.project = project;
-    if (status) query.status = status;
-    if (priority) query.priority = priority;
-    if (assignedMember) {
-      query.assignedMember = assignedMember === 'unassigned' ? null : assignedMember;
-    }
-
-    if (deadlineStatus) {
-      const today = new Date();
-      if (deadlineStatus === 'overdue') {
-        query.dueDate = { $lt: today };
-        query.status = { $ne: 'Completed' };
-      } else if (deadlineStatus === 'upcoming') {
-        query.dueDate = { $gte: today };
-      }
-    }
-
+    const filter: any = {};
+    if (project) filter.project = project;
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
+    if (assignedMember) filter.assignedMember = assignedMember;
     if (search) {
-      query.$or = [
+      filter.$or = [
         { title: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
       ];
     }
 
-    let sortOptions: Record<string, 1 | -1> = { createdAt: -1 };
-    if (sortBy) {
-      switch (sortBy) {
-        case 'nearestDeadline':
-          sortOptions = { dueDate: 1 };
-          break;
-        case 'highestPriority':
-          sortOptions = { priority: 1 };
-          break;
-        case 'recentlyUpdated':
-          sortOptions = { updatedAt: -1 };
-          break;
-        default:
-          sortOptions = { createdAt: -1 };
-      }
-    }
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
 
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
-
-    let tasks = await Task.find(query)
+    const totalTasks = await Task.countDocuments(filter);
+    const tasks = await Task.find(filter)
       .populate('project', 'name status')
-      .populate('assignedMember', 'name email role avatarUrl')
-      .populate('createdBy', 'name email role')
-      .sort(sortOptions)
+      .populate('assignedMember', 'name email avatarUrl role')
+      .populate('createdBy', 'name email avatarUrl role')
+      .populate('comments.user', 'name email avatarUrl role')
+      .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit, 10));
-
-    if (sortBy === 'highestPriority') {
-      const priorityMap: Record<string, number> = { High: 1, Medium: 2, Low: 3 };
-      tasks = tasks.sort(
-        (a, b) => (priorityMap[a.priority] ?? 99) - (priorityMap[b.priority] ?? 99)
-      );
-    }
-
-    const total = await Task.countDocuments(query);
+      .limit(limitNum);
 
     res.json({
       success: true,
-      total,
-      page: parseInt(page, 10),
-      pages: Math.ceil(total / parseInt(limit, 10)),
       data: tasks,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total: totalTasks,
+        totalPages: Math.ceil(totalTasks / limitNum),
+      },
     });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
   }
 });
 
-// @desc    Get single task details
+// @desc    Get single task
 // @route   GET /api/tasks/:id
 // @access  Private
 router.get('/:id', protect, async (req: AuthRequest, res: Response) => {
   try {
     const task = await Task.findById(req.params.id)
-      .populate('project', 'name status members')
-      .populate('assignedMember', 'name email role avatarUrl')
-      .populate('createdBy', 'name email role')
-      .populate('comments.user', 'name email role avatarUrl');
+      .populate('project', 'name status')
+      .populate('assignedMember', 'name email avatarUrl role')
+      .populate('createdBy', 'name email avatarUrl role')
+      .populate('comments.user', 'name email avatarUrl role');
 
     if (!task) {
       res.status(404).json({ success: false, message: 'Task not found' });
       return;
     }
+
     res.json({ success: true, data: task });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
   }
 });
 
-// @desc    Create new task
+// @desc    Create a new task
 // @route   POST /api/tasks
-// @access  Private (Admin & PM only)
-router.post(
-  '/',
-  protect,
-  authorize('Admin', 'Project Manager'),
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const { title, description, project, assignedMember, dueDate, priority, status } =
-        req.body as {
-          title: string;
-          description?: string;
-          project: string;
-          assignedMember?: string;
-          dueDate: string;
-          priority?: string;
-          status?: string;
-        };
+// @access  Private (Admin, Project Manager)
+router.post('/', protect, authorize('Admin', 'Project Manager'), async (req: AuthRequest, res: Response) => {
+  try {
+    const { title, description, project, assignedMember, dueDate, priority, status } = req.body;
 
-      if (dueDate && isPastDate(dueDate)) {
-        res.status(400).json({ success: false, message: 'Please select a valid deadline.' });
-        return;
-      }
-
-      const duplicate = await Task.findOne({
-        project,
-        title: { $regex: `^${title.trim()}$`, $options: 'i' },
-      });
-      if (duplicate) {
-        res.status(400).json({ success: false, message: 'This task already exists in the project.' });
-        return;
-      }
-
-      const proj = await Project.findById(project);
-      if (!proj) {
-        res.status(404).json({ success: false, message: 'Associated project not found' });
-        return;
-      }
-
-      const task = await Task.create({
-        title: title.trim(),
-        description,
-        project,
-        assignedMember: assignedMember || null,
-        dueDate,
-        priority: priority || 'Medium',
-        status: status || 'Todo',
-        createdBy: req.user!.id,
-      });
-
-      let activityText = `Task "${task.title}" created in project "${proj.name}"`;
-      if (assignedMember) {
-        const user = await User.findById(assignedMember);
-        if (user) activityText += ` and assigned to ${user.name}`;
-      }
-
-      await Activity.create({
-        text: activityText,
-        user: req.user!.id,
-        type: 'task_created',
-        project: proj._id,
-        task: task._id,
-      });
-
-      res.status(201).json({ success: true, data: task });
-    } catch (error) {
-      res.status(500).json({ success: false, message: (error as Error).message });
+    if (!title || !project) {
+      res.status(400).json({ success: false, message: 'Title and project are required' });
+      return;
     }
-  }
-);
 
-// @desc    Update task
+    // Validate dueDate is not in the past
+    if (dueDate && isPastDate(dueDate)) {
+      res.status(400).json({ success: false, message: 'Due date cannot be in the past' });
+      return;
+    }
+
+    // Validate project exists
+    const projectDoc = await Project.findById(project);
+    if (!projectDoc) {
+      res.status(400).json({ success: false, message: 'Project not found' });
+      return;
+    }
+
+    // Validate assignedMember exists and is in the project
+    if (assignedMember) {
+      const member = await User.findById(assignedMember);
+      if (!member) {
+        res.status(400).json({ success: false, message: 'Assigned member not found' });
+        return;
+      }
+      const projectMembers = (projectDoc.members as any[]).map((m: any) => m.toString());
+      if (!projectMembers.includes(assignedMember)) {
+        res.status(400).json({ success: false, message: 'Assigned member is not part of this project' });
+        return;
+      }
+    }
+
+    const task = await Task.create({
+      title,
+      description,
+      project,
+      assignedMember: assignedMember || null,
+      dueDate: dueDate || null,
+      priority: priority || 'Medium',
+      status: status || 'Todo',
+      createdBy: req.user!._id,
+    });
+
+    // Log activity
+    await Activity.create({
+      text: `Task "${title}" created by ${req.user!.name}`,
+      user: req.user!._id,
+      type: 'task_created',
+      project,
+      task: task._id,
+    });
+
+    const populatedTask = await Task.findById(task._id)
+      .populate('project', 'name status')
+      .populate('assignedMember', 'name email avatarUrl role')
+      .populate('createdBy', 'name email avatarUrl role');
+
+    res.status(201).json({ success: true, data: populatedTask });
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message });
+  }
+});
+
+// @desc    Update a task
 // @route   PUT /api/tasks/:id
-// @access  Private
+// @access  Private (Admin, Project Manager, assigned Team Member for status only)
 router.put('/:id', protect, async (req: AuthRequest, res: Response) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -235,152 +202,89 @@ router.put('/:id', protect, async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const { title, description, assignedMember, dueDate, priority, status } = req.body as {
-      title?: string;
-      description?: string;
-      assignedMember?: string | null;
-      dueDate?: string;
-      priority?: string;
-      status?: string;
-    };
+    const { title, description, project, assignedMember, dueDate, priority, status } = req.body;
 
-    // RBAC: Team members can only update status of their assigned tasks
-    if (req.user!.role === 'Team Member') {
-      const assignedId = task.assignedMember ? task.assignedMember.toString() : null;
-      if (assignedId !== req.user!.id.toString()) {
-        res.status(403).json({ success: false, message: 'Team Members can only update their assigned tasks.' });
-        return;
+    // Role-based update restrictions
+    const isAssignedMember = task.assignedMember && task.assignedMember.toString() === req.user!._id.toString();
+    const isAdmin = req.user!.role === 'Admin';
+    const isPM = req.user!.role === 'Project Manager';
+
+    // Team Members can only update status of tasks assigned to them
+    if (req.user!.role === 'Team Member' && !isAssignedMember) {
+      res.status(403).json({ success: false, message: 'Team Members can only update tasks assigned to them' });
+      return;
+    }
+
+    if (req.user!.role === 'Team Member' && isAssignedMember) {
+      // Team Members can only change the status field
+      task.status = status || task.status;
+    } else {
+      // Admin and Project Manager can update all fields
+      if (title) task.title = title;
+      if (description) task.description = description;
+      if (project) task.project = project;
+      if (assignedMember) task.assignedMember = assignedMember;
+      if (dueDate) {
+        if (isPastDate(dueDate)) {
+          res.status(400).json({ success: false, message: 'Due date cannot be in the past' });
+          return;
+        }
+        task.dueDate = dueDate;
       }
-      if (
-        (title && title !== task.title) ||
-        (description && description !== task.description) ||
-        (assignedMember !== undefined && assignedMember !== assignedId) ||
-        (dueDate && new Date(dueDate).getTime() !== new Date(task.dueDate).getTime()) ||
-        (priority && priority !== task.priority)
-      ) {
-        res.status(403).json({ success: false, message: 'Team Members can only update the status of assigned tasks.' });
-        return;
-      }
+      if (priority) task.priority = priority;
+      if (status) task.status = status;
     }
 
-    // Rule 2: Prevent reassigning completed tasks
-    if (task.status === 'Completed') {
-      const currentAssignee = task.assignedMember ? task.assignedMember.toString() : null;
-      const targetAssignee = assignedMember !== undefined ? (assignedMember || null) : currentAssignee;
-      if (currentAssignee !== (targetAssignee?.toString() ?? null)) {
-        res.status(400).json({ success: false, message: 'Completed tasks cannot be reassigned.' });
-        return;
-      }
-    }
+    const updatedTask = await task.save();
 
-    // Rule 3: Prevent past deadlines
-    if (dueDate && new Date(dueDate).getTime() !== new Date(task.dueDate).getTime()) {
-      if (isPastDate(dueDate)) {
-        res.status(400).json({ success: false, message: 'Please select a valid deadline.' });
-        return;
-      }
-    }
+    // Log activity
+    await Activity.create({
+      text: `Task "${updatedTask.title}" updated by ${req.user!.name}`,
+      user: req.user!._id,
+      type: 'task_updated',
+      project: updatedTask.project,
+      task: updatedTask._id,
+    });
 
-    // Rule 1: Prevent duplicate titles
-    if (title && title.trim().toLowerCase() !== task.title.toLowerCase()) {
-      const duplicate = await Task.findOne({
-        project: task.project,
-        _id: { $ne: task._id },
-        title: { $regex: `^${title.trim()}$`, $options: 'i' },
-      });
-      if (duplicate) {
-        res.status(400).json({ success: false, message: 'This task already exists in the project.' });
-        return;
-      }
-    }
+    const populatedTask = await Task.findById(updatedTask._id)
+      .populate('project', 'name status')
+      .populate('assignedMember', 'name email avatarUrl role')
+      .populate('createdBy', 'name email avatarUrl role')
+      .populate('comments.user', 'name email avatarUrl role');
 
-    const oldStatus = task.status;
-    const oldAssignee = task.assignedMember ? task.assignedMember.toString() : null;
-
-    if (title !== undefined) task.title = title.trim();
-    if (description !== undefined) task.description = description;
-    if (assignedMember !== undefined) task.assignedMember = assignedMember ? (assignedMember as unknown as import('mongoose').Types.ObjectId) : null;
-    if (dueDate !== undefined) task.dueDate = new Date(dueDate);
-    if (priority !== undefined) task.priority = priority as import('../types').TaskPriority;
-    if (status !== undefined) task.status = status as import('../types').TaskStatus;
-
-    await task.save();
-
-    const updatedTask = await Task.findById(task._id)
-      .populate('project', 'name')
-      .populate('assignedMember', 'name');
-
-    if (status && status !== oldStatus) {
-      const activityType = status === 'Completed' ? 'task_completed' : 'task_updated';
-      const activityText =
-        status === 'Completed'
-          ? `Task "${updatedTask!.title}" marked as Completed by ${req.user!.name}`
-          : `Task "${updatedTask!.title}" status changed to "${status}" by ${req.user!.name}`;
-      await Activity.create({
-        text: activityText,
-        user: req.user!.id,
-        type: activityType,
-        project: task.project,
-        task: task._id,
-      });
-    }
-
-    const newAssignee = task.assignedMember ? task.assignedMember.toString() : null;
-    if (assignedMember !== undefined && newAssignee !== oldAssignee) {
-      const assignedUser = updatedTask?.assignedMember as unknown as { name: string } | null;
-      const activityText = newAssignee
-        ? `Task "${updatedTask!.title}" assigned to ${assignedUser?.name} by ${req.user!.name}`
-        : `Task "${updatedTask!.title}" unassigned by ${req.user!.name}`;
-      await Activity.create({
-        text: activityText,
-        user: req.user!.id,
-        type: 'task_assigned',
-        project: task.project,
-        task: task._id,
-      });
-    }
-
-    res.json({ success: true, data: updatedTask });
+    res.json({ success: true, data: populatedTask });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
   }
 });
 
-// @desc    Delete task
+// @desc    Delete a task
 // @route   DELETE /api/tasks/:id
-// @access  Private (Admin & PM only)
-router.delete(
-  '/:id',
-  protect,
-  authorize('Admin', 'Project Manager'),
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const task = await Task.findById(req.params.id).populate('project', 'name');
-      if (!task) {
-        res.status(404).json({ success: false, message: 'Task not found' });
-        return;
-      }
-
-      const taskTitle = task.title;
-      const proj = task.project as unknown as { name: string; _id: string } | null;
-
-      await Task.findByIdAndDelete(req.params.id);
-
-      await Activity.create({
-        text: `Task "${taskTitle}" deleted from project "${proj?.name ?? ''}" by ${req.user!.name}`,
-        user: req.user!.id,
-        type: 'task_deleted',
-        project: proj?._id ?? null,
-      });
-
-      res.json({ success: true, message: 'Task deleted successfully' });
-    } catch (error) {
-      res.status(500).json({ success: false, message: (error as Error).message });
+// @access  Private (Admin, Project Manager)
+router.delete('/:id', protect, authorize('Admin', 'Project Manager'), async (req: AuthRequest, res: Response) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      res.status(404).json({ success: false, message: 'Task not found' });
+      return;
     }
-  }
-);
 
-// @desc    Add comment to task
+    // Log activity before deletion
+    await Activity.create({
+      text: `Task "${task.title}" deleted by ${req.user!.name}`,
+      user: req.user!._id,
+      type: 'task_deleted',
+      project: task.project,
+    });
+
+    await task.deleteOne();
+    res.json({ success: true, message: 'Task deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message });
+  }
+});
+
+// @desc    Add a comment to a task
 // @route   POST /api/tasks/:id/comments
 // @access  Private
 router.post('/:id/comments', protect, async (req: AuthRequest, res: Response) => {
@@ -391,58 +295,66 @@ router.post('/:id/comments', protect, async (req: AuthRequest, res: Response) =>
       return;
     }
 
-    const { text } = req.body as { text: string };
-    if (!text || text.trim() === '') {
-      res.status(400).json({ success: false, message: 'Please add comment text' });
+    const { text } = req.body;
+    if (!text) {
+      res.status(400).json({ success: false, message: 'Comment text is required' });
       return;
     }
 
-    task.comments.push({ user: req.user!._id, text: text.trim(), createdAt: new Date() });
+    task.comments.push({ user: req.user!._id, text, createdAt: new Date() });
     await task.save();
 
-    const populatedTask = await Task.findById(task._id).populate(
-      'comments.user',
-      'name email role avatarUrl'
-    );
+    const populatedTask = await Task.findById(task._id)
+      .populate('comments.user', 'name email avatarUrl role');
 
-    res.json({ success: true, data: populatedTask!.comments });
+    res.status(201).json({ success: true, data: populatedTask?.comments || [] });
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message });
   }
 });
 
-// @desc    Upload file attachment to task
+// @desc    Upload attachment to a task
 // @route   POST /api/tasks/:id/attachments
-// @access  Private
-router.post(
-  '/:id/attachments',
-  protect,
-  upload.single('file'),
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const task = await Task.findById(req.params.id);
-      if (!task) {
-        res.status(404).json({ success: false, message: 'Task not found' });
-        return;
-      }
-      if (!req.file) {
-        res.status(400).json({ success: false, message: 'Please upload a file' });
-        return;
-      }
-
-      task.attachments.push({
-        filename: req.file.originalname,
-        filepath: `/uploads/${req.file.filename}`,
-        filetype: req.file.mimetype,
-        uploadedAt: new Date(),
-      });
-      await task.save();
-
-      res.json({ success: true, data: task.attachments });
-    } catch (error) {
-      res.status(500).json({ success: false, message: (error as Error).message });
+// @access  Private (Admin, Project Manager, assigned Team Member)
+router.post('/:id/attachments', protect, upload.single('file'), async (req: AuthRequest, res: Response) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      res.status(404).json({ success: false, message: 'Task not found' });
+      return;
     }
+
+    if (!req.file) {
+      res.status(400).json({ success: false, message: 'No file uploaded' });
+      return;
+    }
+
+    // Role check: only assigned member, Admin, or PM can upload
+    const isAssignedMember = task.assignedMember && task.assignedMember.toString() === req.user!._id.toString();
+    const isAdminOrPM = req.user!.role === 'Admin' || req.user!.role === 'Project Manager';
+    if (!isAssignedMember && !isAdminOrPM) {
+      res.status(403).json({ success: false, message: 'Not authorized to upload attachments to this task' });
+      return;
+    }
+
+    // filepath matches the IAttachment schema; on Vercel it's /tmp/uploads, locally it's the project uploads dir
+    const filepath = process.env.VERCEL
+      ? path.join('/tmp', 'uploads', req.file.filename)
+      : path.join(__dirname, '../uploads', req.file.filename);
+
+    task.attachments.push({
+      filename: req.file.filename,
+      filepath: filepath,
+      filetype: req.file.mimetype,
+      uploadedAt: new Date(),
+    });
+
+    await task.save();
+
+    res.status(201).json({ success: true, data: task.attachments });
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message });
   }
-);
+});
 
 export default router;

@@ -1,79 +1,12 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import path from 'path';
-import fs from 'fs';
+// Local development entry point — NOT used on Vercel (api/index.ts is the serverless entry)
+import app from './app';
 import connectDB from './config/db';
-
-// Load environment variables
-dotenv.config();
-
-// Connect to Database
-connectDB();
-
-const app = express();
-
-// Body Parser Middleware
-app.use(express.json());
-
-// Enable CORS
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
-
-// Serve uploaded files statically
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-app.use('/uploads', express.static(uploadsDir));
-
-// Route Files
-import authRoutes from './routes/auth';
-import projectRoutes from './routes/projects';
-import taskRoutes from './routes/tasks';
-import teamRoutes from './routes/team';
-import activityRoutes from './routes/activities';
-
-// Mount Routers
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/tasks', taskRoutes);
-app.use('/api/team', teamRoutes);
-app.use('/api/activities', activityRoutes);
-
-// Root Route - API welcome message
-app.get('/', (_req, res) => {
-  res.json({
-    success: true,
-    message: 'Smart Project & Task Collaboration System API',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      projects: '/api/projects',
-      tasks: '/api/tasks',
-      team: '/api/team',
-      activities: '/api/activities',
-      health: '/api/health'
-    }
-  });
-});
-
-// Health Check Route
-app.get('/api/health', (_req, res) => {
-  res.json({ success: true, message: 'Server is running perfectly' });
-});
-
-// Auto-seed Database if empty
 import User from './models/User';
 import Project from './models/Project';
 import Task from './models/Task';
 import Activity from './models/Activity';
 
+// ─── Auto-seed Database if empty (only in local dev) ────────────────────────
 const autoSeed = async (): Promise<void> => {
   try {
     const userCount = await User.countDocuments();
@@ -212,9 +145,12 @@ const autoSeed = async (): Promise<void> => {
   }
 };
 
-// Start Server & Run Auto-seed
+// ─── Start Server (local dev only) ─────────────────────────────────────────
+// On Vercel, the serverless function in api/index.ts handles requests instead
 const PORT = parseInt(process.env.PORT || '5000', 10);
-app.listen(PORT, async () => {
-  console.log(`Server running in development mode on port ${PORT}`);
-  await autoSeed();
+connectDB().then(async () => {
+  app.listen(PORT, async () => {
+    console.log(`Server running in development mode on port ${PORT}`);
+    await autoSeed();
+  });
 });
