@@ -217,6 +217,21 @@ router.put('/:id', protect, async (req: AuthRequest, res: Response) => {
       return;
     }
 
+    // Validate assignedMember is in the project (when assignee or project changes)
+    if (assignedMember) {
+      const effectiveProjectId = project || task.project.toString();
+      const projectDoc = await Project.findById(effectiveProjectId);
+      if (!projectDoc) {
+        res.status(400).json({ success: false, message: 'Project not found' });
+        return;
+      }
+      const projectMembers = (projectDoc.members as any[]).map((m: any) => m.toString());
+      if (!projectMembers.includes(assignedMember)) {
+        res.status(400).json({ success: false, message: 'Assigned member is not part of this project' });
+        return;
+      }
+    }
+
     // Prevent duplicate task titles inside the same project (when title or project changes)
     const effectiveTitle = title || task.title;
     const effectiveProject = project || task.project.toString();

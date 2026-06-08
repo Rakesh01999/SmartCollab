@@ -90,6 +90,18 @@ export default function TasksView() {
 
   const permissions = usePermissions();
 
+  // Compute eligible assignees: only members belonging to the selected project
+  const eligibleAssignees = taskProjId
+    ? team.filter(m => {
+      const proj = projects.find(p => p._id === taskProjId);
+      if (!proj) return false;
+      const memberIds = (proj.members as User[] | string[]).map(mem =>
+        typeof mem === 'string' ? mem : mem._id
+      );
+      return memberIds.includes(m._id as string) || memberIds.includes(m.id);
+    })
+    : team;
+
   const loadAllData = async () => {
     try {
       setLoading(true);
@@ -911,7 +923,22 @@ export default function TasksView() {
                   <select
                     id="task-project-select"
                     value={taskProjId}
-                    onChange={(e) => setTaskProjId(e.target.value)}
+                    onChange={(e) => {
+                      const newProjId = e.target.value;
+                      setTaskProjId(newProjId);
+                      // Reset assignee if current assignee is not a member of the new project
+                      if (taskAssigneeId) {
+                        const newProj = projects.find(p => p._id === newProjId);
+                        if (newProj) {
+                          const memberIds = (newProj.members as User[] | string[]).map(mem =>
+                            typeof mem === 'string' ? mem : mem._id
+                          );
+                          if (!memberIds.includes(taskAssigneeId)) {
+                            setTaskAssigneeId('');
+                          }
+                        }
+                      }
+                    }}
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-sky-600"
                     required
                   >
@@ -937,7 +964,7 @@ export default function TasksView() {
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-sky-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="">Unassigned</option>
-                    {team.map(m => (
+                    {eligibleAssignees.map(m => (
                       <option key={m._id} value={m._id as string}>{m.name}</option>
                     ))}
                   </select>
