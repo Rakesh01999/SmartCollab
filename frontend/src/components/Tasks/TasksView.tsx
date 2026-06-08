@@ -216,6 +216,27 @@ export default function TasksView() {
       return;
     }
 
+    // Client-side rule check: Prevent duplicate task titles inside the same project
+    const isDuplicate = tasks.some(t => {
+      const tProjectId = (t.project as Project)?._id || (t.project as string);
+      return t.title.trim().toLowerCase() === taskTitle.trim().toLowerCase()
+        && tProjectId === taskProjId
+        && (!isEditMode || t._id !== activeTask?._id);
+    });
+    if (isDuplicate) {
+      dispatch(showToast({ message: 'This task already exists in the project.', type: 'error' }));
+      return;
+    }
+
+    // Client-side rule check: Completed tasks cannot be reassigned
+    if (isEditMode && activeTask && activeTask.status === 'Completed' && taskAssigneeId) {
+      const originalAssignee = (activeTask.assignedMember as User)?._id || (activeTask.assignedMember as unknown as string) || '';
+      if (taskAssigneeId !== originalAssignee) {
+        dispatch(showToast({ message: 'Completed tasks cannot be reassigned.', type: 'error' }));
+        return;
+      }
+    }
+
     // Client-side rule check: Past due dates (if creating or if date changed)
     const todayStr = new Date().toISOString().split('T')[0];
     if (taskDueDate < todayStr) {
@@ -902,12 +923,18 @@ export default function TasksView() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400" htmlFor="task-assignee-select">Assigned Member</label>
+                  <label className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400" htmlFor="task-assignee-select">
+                    Assigned Member
+                    {isEditMode && activeTask?.status === 'Completed' && (
+                      <span className="ml-1 text-[10px] text-rose-500 dark:text-rose-400 font-normal">(Completed tasks cannot be reassigned)</span>
+                    )}
+                  </label>
                   <select
                     id="task-assignee-select"
                     value={taskAssigneeId}
                     onChange={(e) => setTaskAssigneeId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-sky-600"
+                    disabled={isEditMode && activeTask?.status === 'Completed'}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg text-sm md:text-base text-slate-600 dark:text-slate-300 focus:outline-none focus:border-sky-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="">Unassigned</option>
                     {team.map(m => (

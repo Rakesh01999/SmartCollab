@@ -146,6 +146,13 @@ router.post('/', protect, authorize('Admin', 'Project Manager'), async (req: Aut
       return;
     }
 
+    // Prevent duplicate task titles inside the same project
+    const existingTask = await Task.findOne({ title, project });
+    if (existingTask) {
+      res.status(400).json({ success: false, message: 'This task already exists in the project.' });
+      return;
+    }
+
     // Validate assignedMember exists and is in the project
     if (assignedMember) {
       const member = await User.findById(assignedMember);
@@ -203,6 +210,27 @@ router.put('/:id', protect, async (req: AuthRequest, res: Response) => {
     }
 
     const { title, description, project, assignedMember, dueDate, priority, status } = req.body;
+
+    // Prevent reassigning completed tasks
+    if (task.status === 'Completed' && assignedMember) {
+      res.status(400).json({ success: false, message: 'Completed tasks cannot be reassigned.' });
+      return;
+    }
+
+    // Prevent duplicate task titles inside the same project (when title or project changes)
+    const effectiveTitle = title || task.title;
+    const effectiveProject = project || task.project.toString();
+    if (title || project) {
+      const duplicateTask = await Task.findOne({
+        title: effectiveTitle,
+        project: effectiveProject,
+        _id: { $ne: task._id },
+      });
+      if (duplicateTask) {
+        res.status(400).json({ success: false, message: 'This task already exists in the project.' });
+        return;
+      }
+    }
 
     // Role-based update restrictions
     const isAssignedMember = task.assignedMember && task.assignedMember.toString() === req.user!._id.toString();
